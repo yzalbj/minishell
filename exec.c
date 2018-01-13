@@ -46,13 +46,18 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	char	**all_path;
 	char	*bin;
 	int		i;
-	int		j;
 
 	env_path = ft_strdup(ft_getenv("PATH", env));
 	all_path = ft_strsplit(env_path, ':');
 	i = 0;
 	ft_addslash_totab(all_path);
-
+	while (p->builtin[i])
+	{
+		if (!ft_strcmp(p->builtin[i], tab_prompt[0]))
+			return ;
+		i++;
+	}
+	i = 0;
 	if (!all_path)
 	{
 		ft_putstr(tab_prompt[0]);
@@ -61,13 +66,6 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	while (all_path)
 	{
 		bin = ft_strjoin(all_path[i], tab_prompt[0], 'N');
-		j = 0;
-		while (p->builtin[j])
-		{
-			if (!ft_strcmp(p->builtin[j], tab_prompt[0]))
-				return ;
-			j++;
-		}
 		if (execve(bin, tab_prompt, env))
 		{
 			if (!all_path[i])

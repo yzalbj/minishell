@@ -41,18 +41,17 @@ int	ft_builtin(t_prompt *p)
 	{
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 2)
 		{
-			p->env = ft_setenv(p->tab_prompt, p->env);
+			ft_setenv(p->tab_prompt, &p->env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 3)
 		{
-			ft_unsetenv(p->tab_prompt, p->env);
+			ft_unsetenv(p->tab_prompt, &p->env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 4)
 		{
 			ft_env(p);
-			ft_putendl("after the env yo");
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 5)

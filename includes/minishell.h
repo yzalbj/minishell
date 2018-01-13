@@ -18,6 +18,12 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
+typedef struct		s_opt
+{
+	int				L;
+	int				P;
+}					t_opt;
+
 typedef struct		s_prompt
 {
 	// char			*path_env;
@@ -38,8 +44,8 @@ char	**create_builtin_tab(void);
 */
 
 void ft_env(t_prompt *p);
-char	**ft_setenv(char **tab_prompt, char **env);
-int		ft_unsetenv(char **tab_prompt, char **env);
+int		ft_setenv(char **tab_prompt, char ***env);
+int		ft_unsetenv(char **tab_prompt, char ***env);
 /*
 **	ENV.C
 */

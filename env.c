@@ -63,7 +63,7 @@ void ft_increase_shlvl(char **env)
 	tab_prompt[1] = ft_strdup("SHLVL");
 	tab_prompt[2] = ft_itoa(shlvl);
 	tab_prompt[3] = NULL;
-	ft_setenv(tab_prompt, env);
+	ft_setenv(tab_prompt, &env);
 }
 
 char	**ft_create_env(char **env)
