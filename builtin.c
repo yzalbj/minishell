@@ -39,6 +39,11 @@ int	ft_builtin(t_prompt *p)
 	i = 0;
 	while (p->builtin[i])
 	{
+		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 1)
+		{
+			ft_cd(p, p->env);
+			return (1);
+		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 2)
 		{
 			ft_setenv(p->tab_prompt, &p->env);

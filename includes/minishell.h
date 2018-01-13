@@ -40,7 +40,12 @@ typedef struct		s_prompt
 char	**create_builtin_tab(void);
 
 /*
-**	BUILTIN.C
+**	BUILTIN_CD.C
+*/
+
+int	ft_cd(t_prompt *p, char **env);
+/*
+**	BUILTIN_ENV.C
 */
 
 void ft_env(t_prompt *p);
@@ -52,7 +57,9 @@ int		ft_unsetenv(char **tab_prompt, char ***env);
 
 char	**ft_create_env(char **env);
 void ft_increase_shlvl(char **env);
+char	**ft_createtab_for_setenv(char *name, char *value, char f);
 char	*ft_getenv(char *var, char **env);
+void ft_update_pwd(char *new_pwd, char **env);
 
 /*
 **	EXEC.C

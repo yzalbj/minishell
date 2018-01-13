@@ -16,7 +16,8 @@ SRC = ft_atoi.c ft_dectobin.c ft_dectooct.c ft_swapstr.c ft_intlen.c\
 		  ft_tolower.c ft_toupper.c ft_strnstr.c ft_strtrim.c ft_wordlen.c \
 		  ft_strsplit.c ft_strlcat.c ft_lstnew.c ft_lstdelone.c ft_lstdel.c \
 		  ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_lstdelelem.c ft_lstaddback.c \
-		  get_next_line.c ft_tabdup.c ft_tabndup.c ft_tablen.c ft_printtab.c
+		  get_next_line.c ft_tabdup.c ft_tabndup.c ft_tablen.c ft_printtab.c \
+		  ft_freetab.c
 
 OBJ = $(SRC:.c=.o)
 

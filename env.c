@@ -11,6 +11,17 @@
 
 #include "./includes/minishell.h"
 
+void ft_update_pwd(char *new_pwd, char **env)
+{
+	char	**new_var;
+	
+	new_var = ft_createtab_for_setenv("OLDPWD",
+		ft_getenv("PWD", env), 'N');
+	ft_setenv(new_var, &env);
+	ft_freetab(&new_var);
+	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'R');
+	ft_setenv(new_var, &env);
+}
 
 char	*ft_getenv(char *var, char **env)
 {
@@ -28,25 +39,6 @@ char	*ft_getenv(char *var, char **env)
 	}
 	return (NULL);
 }
-//
-// void ft_changeenv(char *var, char *new_var, char **env)
-// {
-// 	char	*to_add;
-// 	int		i;
-//
-// 	i = 0;
-// 	while (env[i])
-// 	{
-// 		if (!ft_strncmp(var, env[i], ft_strlen(var)) &&
-// 			env[i][ft_strlen(var)] == '=')
-// 		{
-// 			to_add = ft_strjoin(var, "=", 'N');
-// 			to_add = ft_strjoin(to_add, new_var, 'B');
-// 			env[i] = to_add;
-// 		}
-// 		i++;
-// 	}
-// }
 
 void ft_increase_shlvl(char **env)
 {
@@ -54,16 +46,28 @@ void ft_increase_shlvl(char **env)
 	char	**tab_prompt;
 	int		shlvl;
 
-	if (!(tab_prompt = (char **)malloc(sizeof(char *) * 4)))
-		return ;
 	new_shlvl = ft_strdup(ft_getenv("SHLVL", env));
 	shlvl = ft_atoi(new_shlvl);
 	shlvl++;
-	tab_prompt[0] = ft_strdup("setenv");
-	tab_prompt[1] = ft_strdup("SHLVL");
-	tab_prompt[2] = ft_itoa(shlvl);
-	tab_prompt[3] = NULL;
+	tab_prompt = ft_createtab_for_setenv("SHLVL", ft_itoa(shlvl), 'R');
 	ft_setenv(tab_prompt, &env);
+}
+
+char	**ft_createtab_for_setenv(char *name, char *value, char f)
+{
+	char	**tab;
+
+	if (!(tab = (char **)malloc(sizeof(char *) * 4)))
+		return (NULL);
+	tab[0] = ft_strdup("setenv");
+	tab[1] = ft_strdup(name);
+	tab[2] = ft_strdup(value);
+	tab[3] = NULL;
+	if (f == 'L' || f == 'B')
+		ft_strdel(&name);
+	if (f == 'R' || f == 'B')
+		ft_strdel(&value);
+	return (tab);
 }
 
 char	**ft_create_env(char **env)
@@ -86,7 +90,5 @@ char	**ft_create_env(char **env)
 	new_env[1] = ft_strjoin("PWD=", getcwd(pwd, 256), 'N');
 	new_env[2] = ft_strdup("SHLVL=1");
 	new_env[3] = NULL;
-	// ft_printtab(new_env);
-	// ft_putendl("end of ft_create_env");
 	return (new_env);
 }

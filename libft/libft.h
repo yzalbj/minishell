@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 10:32:02 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/09 19:13:01 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/13 19:06:56 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,12 @@ void				ft_bzero(void *s, size_t n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
 char				*ft_strnew(size_t size);
+
+/*
+**	FREE FUNCTIONS
+*/
+
+void				ft_freetab(char ***tab);
 void				ft_strdel(char **as);
 
 /*
