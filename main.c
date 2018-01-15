@@ -24,10 +24,11 @@ int		main(int argc, char **argv, char **env)
 	// ft_increase_shlvl(p.env);
 	while (1)
 	{
-		ft_putstr("$>");
+		ft_putstr("$> ");
 		p.prompt = NULL;
 		get_next_line(0, &p.prompt);
 		p.tab_prompt = ft_strsplit(p.prompt, ' ');
+		// ft_printtab(p.tab_prompt);
 		int		i = 0;
 		while (p.tab_prompt[i])
 		{

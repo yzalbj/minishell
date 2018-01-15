@@ -11,16 +11,16 @@
 
 #include "./includes/minishell.h"
 
-void ft_update_pwd(char *new_pwd, char **env)
+void ft_update_pwd(char *new_pwd, char ***env)
 {
 	char	**new_var;
-	
+
 	new_var = ft_createtab_for_setenv("OLDPWD",
-		ft_getenv("PWD", env), 'N');
-	ft_setenv(new_var, &env);
+		ft_getenv("PWD", *env), 'N');
+	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
 	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'R');
-	ft_setenv(new_var, &env);
+	ft_setenv(new_var, env);
 }
 
 char	*ft_getenv(char *var, char **env)
@@ -33,7 +33,7 @@ char	*ft_getenv(char *var, char **env)
 		if (!ft_strncmp(var, env[i], ft_strlen(var)) &&
 			env[i][ft_strlen(var)] == '=')
 		{
-			return (&env[i][ft_strlen(var) + 1]);
+			return (ft_strdup(&env[i][ft_strlen(var) + 1]));
 		}
 		i++;
 	}

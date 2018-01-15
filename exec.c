@@ -47,7 +47,9 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	char	*bin;
 	int		i;
 
-	env_path = ft_strdup(ft_getenv("PATH", env));
+	env_path = ft_getenv("PATH", env);
+	// ft_putendl("PATH ==");
+	// ft_putendl(env_path);
 	all_path = ft_strsplit(env_path, ':');
 	i = 0;
 	ft_addslash_totab(all_path);

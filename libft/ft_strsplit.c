@@ -28,7 +28,7 @@ char	**ft_strsplit(char const *s, char c)
 		return (NULL);
 	while (index < count)
 	{
-		if (*s && *s != c && (*(s - 1) == c || begin == s - 1))
+		if (*s && *s != c && (begin == s - 1 || *(s - 1) == c ))
 		{
 			if (!(tab[index] = ft_strnew(ft_wordlen(s, c))))
 				return (NULL);

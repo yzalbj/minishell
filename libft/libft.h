@@ -50,6 +50,7 @@ int					ft_tablen(char **tab);
 ** STRING FUNCTIONS
 */
 
+char	*ft_strshort(char *str, int index, int len, char f);
 int					get_next_line(int fd, char **line);
 size_t				ft_strlen(const char *s);
 char				*ft_strcpy(char *dst, const char *src);

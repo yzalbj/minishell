@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 # include <unistd.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 
 typedef struct		s_opt
@@ -43,7 +44,7 @@ char	**create_builtin_tab(void);
 **	BUILTIN_CD.C
 */
 
-int	ft_cd(t_prompt *p, char **env);
+int	ft_cd(t_prompt *p, char ***env);
 /*
 **	BUILTIN_ENV.C
 */
@@ -59,7 +60,7 @@ char	**ft_create_env(char **env);
 void ft_increase_shlvl(char **env);
 char	**ft_createtab_for_setenv(char *name, char *value, char f);
 char	*ft_getenv(char *var, char **env);
-void ft_update_pwd(char *new_pwd, char **env);
+void ft_update_pwd(char *new_pwd, char ***env);
 
 /*
 **	EXEC.C
