@@ -41,18 +41,59 @@ t_opt	ft_create_option(char **tab_prompt, int *i)
 	return (opt);
 }
 
-void	ft_end_cd(int cd_ret, char *path, char ***env)
+void	ft_end_cd(int cd_ret, char *path, char ***env, t_opt opt)
 {
-	ft_putendl(path);
-	if (!cd_ret || path)
+	if (!cd_ret)
+	{
+		if (opt.P)
+			path = getcwd(NULL, 0);
 		ft_update_pwd(path, env);
-	else
+	}
+	else if (cd_ret == -1)
 	{
 		ft_putstr_fd("cd: No such file or directory: ", 2);
 		ft_putendl_fd(path, 2);
+		ft_strdel(&path);
+	}
+	else if (cd_ret == -2)
+	{
+		ft_putstr_fd("cd: Not a directory: ", 2);
+		ft_putendl_fd(path, 2);
+		ft_strdel(&path);
 	}
 }
 
+char	*ft_opt_p(char *path)
+{
+	int			i;
+	char		*tmp;
+	char		*pwd;
+	struct stat	stat_tmp;
+
+	i = 0;
+	ft_putendl("debut de opt p");
+	ft_putendl(path);
+	while (path[i])
+	{
+		if (path[i] == '/' && i)
+		{
+			if (!lstat(path, &stat_tmp))
+			{
+				if ((stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
+				{
+					tmp = ft_strndup(path, i);
+					chdir(tmp);
+					pwd = getcwd(NULL, 0);
+					path = ft_strjoin(pwd, &path[i], 'L');
+					ft_putendl("path apres opt p");
+					ft_putendl(path);
+				}
+			}
+		}
+		i++;
+	}
+	return (path);
+}
 /*
 **	WHEN TO ADD IS NULL, WE ADD THE PWD TO PATH
 */
@@ -73,42 +114,6 @@ char	*ft_concatpath(char *path, char **env, char *to_add)
 		tmp = ft_strjoin(tmp, "/", 'L');
 	path = ft_strjoin(tmp, path, 'L');
 	return (path);
-}
-
-void ft_checkpath(char *path, char ***env)
-{
-		char		**cdpath;
-		char		*path_tmp;
-		struct stat	stat_tmp;
-		int			i;
-
-		cdpath = ft_strsplit(ft_getenv("CDPATH", *env), ':');
-		path_tmp = NULL;
-		i = 0;
-		while (cdpath)
-		{
-			path_tmp = ft_concatpath(path, *env, cdpath[i]);
-			if (!lstat(path_tmp, &stat_tmp))
-			{
-				if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
-				{
-					ft_freetab(&cdpath);
-					break;
-					// ft_end_cd(chdir(path_tmp), path_tmp, env);
-				}
-			}
-			ft_strdel(&path_tmp);
-			i++;
-		}
-		if (!path_tmp)
-			path_tmp = ft_concatpath(path, *env, NULL);
-		if (!lstat(path_tmp, &stat_tmp))
-		{
-			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
-				ft_end_cd(chdir(path_tmp), path_tmp, env);
-		}
-		else
-			ft_end_cd(-1, path, env);
 }
 
 char	*ft_shortpath(char *path, int i, int j)
@@ -141,6 +146,47 @@ char	*ft_shortpath(char *path, int i, int j)
 	return (path);
 }
 
+char	*ft_checkpath(char *path, char ***env, t_opt opt)
+{
+		char		**cdpath;
+		char		*path_tmp;
+		struct stat	stat_tmp;
+		int			i;
+
+		cdpath = ft_strsplit(ft_getenv("CDPATH", *env), ':');
+		path_tmp = NULL;
+		i = 0;
+		while (cdpath && cdpath[i])
+		{
+			path_tmp = ft_concatpath(path, *env, cdpath[i]);
+			if (!lstat(path_tmp, &stat_tmp))
+			{
+				if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
+				{
+					ft_freetab(&cdpath);
+					break;
+				}
+			}
+			ft_strdel(&path_tmp);
+			i++;
+		}
+		if (!path_tmp)
+			path_tmp = ft_concatpath(path, *env, NULL);
+		if (!opt.P)
+			path_tmp = ft_shortpath(path_tmp, 0, 0);
+		if (!lstat(path_tmp, &stat_tmp))
+		{
+			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR ||
+				(stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
+					return (path_tmp);
+			else
+				ft_end_cd(-2, path, env, opt);
+		}
+		else
+			ft_end_cd(-1, path, env, opt);
+	return (NULL);
+}
+
 int	ft_cd(t_prompt *p, char ***env)
 {
 	char	*path;
@@ -152,33 +198,36 @@ int	ft_cd(t_prompt *p, char ***env)
 	if (!path)
 	{
 		if ((path = ft_strdup(ft_getenv("HOME", *env))))
-			ft_end_cd(chdir(path), path, env);
+			ft_end_cd(chdir(path), path, env, opt);
 		else
 			ft_putendl_fd("cd: HOME not set.", 2);
 	}
+	else if (!ft_strcmp(path, "-"))
+	{
+		path = ft_getenv("OLDPWD", *env);
+		if (path)
+			ft_end_cd(chdir(path), path, env, opt);
+		else
+			ft_putendl_fd("cd: OLDPWD not set.", 2);
+	}
 	else
 	{
-		if (!ft_strcmp(path, "-"))
-		{
-			path = ft_getenv("OLDPWD", *env);
-			if (path)
-				ft_end_cd(chdir(path), path, env);
-			else
-				ft_putendl_fd("cd: OLDPWD not set.", 2);
-		}
-		else if (path[0] == '/' || !ft_strncmp(path, "./", 2) ||
+		if (path[0] == '/' || !ft_strncmp(path, "./", 2) ||
 			!ft_strncmp(path, "../", 3))
 		{
-			if (opt.P)
-				ft_end_cd(chdir(path), path, env);
 			if (!ft_strncmp(path, "./", 2) || !ft_strncmp(path, "../", 3))
 				path = ft_concatpath(path, *env, NULL);
-			path = ft_shortpath(path, 0, 0);
-			// ft_putendl(path);
-			ft_end_cd(chdir(path), path, env);
+			if (!opt.P)
+				path = ft_shortpath(path, 0, 0);
 		}
 		else
-			ft_checkpath(path, env);
+			path = ft_checkpath(path, env, opt);
+		if (path)
+		{
+		//	if (opt.P)
+			//	ft_opt_p(path);
+			ft_end_cd(chdir(path), path, env, opt);
+		}
 	}
 	return (1);
 }
