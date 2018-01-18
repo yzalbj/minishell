@@ -16,14 +16,15 @@
 # include "../libft/libft.h"
 # include <stdio.h>
 # include <unistd.h>
+# include <signal.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 
-typedef struct		s_opt
-{
-	int				L;
-	int				P;
-}					t_opt;
+// typedef struct		s_opt
+// {
+// 	int				L;
+// 	int				P;
+// }					t_opt;
 
 typedef struct		s_prompt
 {
@@ -35,8 +36,21 @@ typedef struct		s_prompt
 }					t_prompt;
 
 /*
+**	BUILTIN_ECHO.C
+*/
+
+int		ft_echo(t_prompt *p, char **env);
+
+/*
+**	PROMPT.C
+*/
+
+void ft_manage_prompt(char ***tab_prompt, char *prompt, char **env);
+
+/*
 **	BUILTIN.C
 */
+
 
 char	**create_builtin_tab(void);
 
@@ -49,7 +63,7 @@ int	ft_cd(t_prompt *p, char ***env);
 **	BUILTIN_ENV.C
 */
 
-void ft_env(t_prompt *p);
+void ft_env(t_prompt *p, char ***env);
 int		ft_setenv(char **tab_prompt, char ***env);
 int		ft_unsetenv(char **tab_prompt, char ***env);
 /*
@@ -67,5 +81,7 @@ void ft_update_pwd(char *new_pwd, char ***env);
 */
 
 void ft_exec(t_prompt *p, char **tab_prompt, char **env);
-int ft_builtin(t_prompt *p);
+
+void ft_exit(int ex);
+int ft_builtin(t_prompt *p, char ***env);
 #endif

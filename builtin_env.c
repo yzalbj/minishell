@@ -12,10 +12,7 @@
 
 #include "./includes/minishell.h"
 
-// on est en trai de faire l'env, check si exec marche bien quand l'env est null, si on envoit bien le tab_prompt
-// qd ya juste -i, jetais en train d'envoyer un tab ou le permier elem = null quad je fais juste env -i, ale a+
-
-void ft_env(t_prompt *p)
+void ft_env(t_prompt *p, char ***env)
 {
 	int		i;
 	char	**new_env;
@@ -23,14 +20,25 @@ void ft_env(t_prompt *p)
 	pid_t	process;
 
 	i = 1;
+	if (!*env)
+		return ;
 	if (!p->tab_prompt[1])
-		ft_printtab(p->env);
+		ft_printtab(*env);
 	else if (p->tab_prompt[1])
 	{
 		if (!ft_strcmp(p->tab_prompt[1], "-i"))
 		{
 			i++;
-			new_env = ft_create_env(NULL);
+			// new_env = ft_create_env(NULL);
+			new_env = NULL;
+			if (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '='))
+			{
+				if (!(new_env = (char **)malloc(sizeof(char *) * 1)))
+					return ;
+				*new_env = NULL;
+			}
+			// new_env = (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '=')) ?
+			// 	ft_create_env(NULL) : NULL;
 			while (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '='))
 			{
 				p->tab_prompt[i] = ft_strjoin("setenv=", p->tab_prompt[i], 'R');
@@ -48,7 +56,11 @@ void ft_env(t_prompt *p)
 			exit(0);
 		}
 		else
+		{
 			wait(0);
+			p->tab_prompt = ft_tabdup(p->tab_prompt + i);
+			ft_builtin(p, &new_env);
+		}
 	}
 }
 
@@ -123,7 +135,7 @@ int		ft_setenv(char **tab_prompt, char ***env)
 	to_add = ft_strjoin(tab_prompt[1], "=", 'N');
 	if (tab_prompt[2])
 		to_add = ft_strjoin(to_add, tab_prompt[2], 'L');
-	while ((*env)[i])
+	while (*env && (*env)[i])
 	{
 		if (!ft_strncmp(tab_prompt[1], (*env)[i], ft_strlen(tab_prompt[1])) &&
 			(*env)[i][ft_strlen(tab_prompt[1])] == '=')

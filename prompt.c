@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tabndup.c                                       :+:      :+:    :+:   */
+/*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/10 16:54:30 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/10 17:46:41 by jblazy           ###   ########.fr       */
+/*   Created: 2018/01/17 14:59:15 by jblazy            #+#    #+#             */
+/*   Updated: 2018/01/17 14:59:16 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/minishell.h"
 
-char	**ft_tabndup(char **tab, size_t n)
+void ft_manage_prompt(char ***tab_prompt, char *prompt, char **env)
 {
-	char	**new;
-	size_t	i;
+	int		i;
+	char	*home_env;
 
 	i = 0;
-	if (!(new = (char **)malloc(sizeof(char *) * (n + 1))))
-		return (NULL);
-	while (tab && tab[i] && i < n)
+	*tab_prompt = ft_strsplit(prompt, ' ');
+	while ((*tab_prompt)[i])
 	{
-		new[i] = ft_strdup(tab[i]);
+		(*tab_prompt)[i] = ft_strtrim((*tab_prompt)[i]);
+		if ((*tab_prompt)[i][0] == '~')
+		{
+			home_env = ft_getenv("HOME", env);
+			(*tab_prompt)[i] = ft_strjoin(home_env, &(*tab_prompt)[i][1], 'L');
+		}
 		i++;
 	}
-	while (i < n + 1)
-	{
-		new[i] = NULL;
-		i++;
-	}
-	return (new);
 }

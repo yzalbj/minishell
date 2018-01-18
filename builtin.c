@@ -12,10 +12,12 @@
 
 #include "./includes/minishell.h"
 
-// void ft_exit(t_prompt *p)
-// {
-// 	exit(0);
-// }
+void ft_exit(int ex)
+{
+	ft_putendl("lol ca qitte");
+	exit(ex);
+}
+
 char	**create_builtin_tab(void)
 {
 	char **builtin;
@@ -32,31 +34,36 @@ char	**create_builtin_tab(void)
 	return (builtin);
 }
 
-int	ft_builtin(t_prompt *p)
+int	ft_builtin(t_prompt *p, char ***env)
 {
 	int		i;
 
 	i = 0;
 	while (p->builtin[i])
 	{
+		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 0)
+		{
+			ft_echo(p, *env);
+			return (1);
+		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 1)
 		{
-			ft_cd(p, &p->env);
+			ft_cd(p, env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 2)
 		{
-			ft_setenv(p->tab_prompt, &p->env);
+			ft_setenv(p->tab_prompt, env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 3)
 		{
-			ft_unsetenv(p->tab_prompt, &p->env);
+			ft_unsetenv(p->tab_prompt, env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 4)
 		{
-			ft_env(p);
+			ft_env(p, env);
 			return (1);
 		}
 		if (!ft_strcmp(p->builtin[i], p->tab_prompt[0]) && i == 5)
@@ -67,7 +74,7 @@ int	ft_builtin(t_prompt *p)
 			// 	return (-1);
 			// }
 			// else
-				exit(0);
+				ft_exit(0);
 		}
 		i++;
 	}

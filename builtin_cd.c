@@ -12,88 +12,60 @@
 
 #include "./includes/minishell.h"
 
-t_opt	ft_create_option(char **tab_prompt, int *i)
+char	ft_isoptp(char **tab_prompt, int *i)
 {
-	t_opt	opt;
+	char	opt_p;
+	int		j;
 
 	*i = 1;
-	opt.L = 0;
-	opt.P = 0;
-	while (tab_prompt[*i] && (!ft_strcmp(tab_prompt[*i], "-L") ||
-		!ft_strcmp(tab_prompt[*i], "-P")))
+	opt_p = 0;
+	while (tab_prompt[*i] &&
+		tab_prompt[*i][0] == '-' && tab_prompt[*i][1])
 	{
-		if (!ft_strcmp(tab_prompt[*i], "-L"))
+		j = 1;
+		while (tab_prompt[*i][j] &&
+			(tab_prompt[*i][j] == 'L' || tab_prompt[*i][j] == 'P'))
 		{
-			opt.P = 0;
-			opt.L = 1;
+			if (tab_prompt[*i][j] == 'P')
+				opt_p = 1;
+			j++;
 		}
-		else
-		{
-			opt.L = 0;
-			opt.P = 1;
-		}
+		if (tab_prompt[*i][j] &&
+			(tab_prompt[*i][j] != 'L' || tab_prompt[*i][j] != 'P'))
+			break ;
 		(*i)++;
 	}
-	if (opt.L != 1)
-		opt.L = 0;
-	if (opt.P != 1)
-		opt.P = 0;
-	return (opt);
+	return (opt_p);
 }
 
-void	ft_end_cd(int cd_ret, char *path, char ***env, t_opt opt)
+void	ft_end_cd(int cd_ret, char *path, char ***env, char opt_p)
 {
 	if (!cd_ret)
 	{
-		if (opt.P)
+		if (opt_p)
 			path = getcwd(NULL, 0);
 		ft_update_pwd(path, env);
 	}
-	else if (cd_ret == -1)
-	{
-		ft_putstr_fd("cd: No such file or directory: ", 2);
-		ft_putendl_fd(path, 2);
-		ft_strdel(&path);
-	}
-	else if (cd_ret == -2)
+	if (cd_ret == -2)
 	{
 		ft_putstr_fd("cd: Not a directory: ", 2);
 		ft_putendl_fd(path, 2);
 		ft_strdel(&path);
 	}
-}
-
-char	*ft_opt_p(char *path)
-{
-	int			i;
-	char		*tmp;
-	char		*pwd;
-	struct stat	stat_tmp;
-
-	i = 0;
-	ft_putendl("debut de opt p");
-	ft_putendl(path);
-	while (path[i])
+	else if (access(path, F_OK) == -1)
 	{
-		if (path[i] == '/' && i)
-		{
-			if (!lstat(path, &stat_tmp))
-			{
-				if ((stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
-				{
-					tmp = ft_strndup(path, i);
-					chdir(tmp);
-					pwd = getcwd(NULL, 0);
-					path = ft_strjoin(pwd, &path[i], 'L');
-					ft_putendl("path apres opt p");
-					ft_putendl(path);
-				}
-			}
-		}
-		i++;
+		ft_putstr_fd("cd: No such file or directory: ", 2);
+		ft_putendl_fd(path, 2);
+		ft_strdel(&path);
 	}
-	return (path);
+	else if (access(path, X_OK) == -1)
+	{
+		ft_putstr_fd("cd: Permission denied: ", 2);
+		ft_putendl_fd(path	, 2);
+		ft_strdel(&path);
+	}
 }
+
 /*
 **	WHEN TO ADD IS NULL, WE ADD THE PWD TO PATH
 */
@@ -146,7 +118,7 @@ char	*ft_shortpath(char *path, int i, int j)
 	return (path);
 }
 
-char	*ft_checkpath(char *path, char ***env, t_opt opt)
+char	*ft_checkpath(char *path, char ***env, char opt_p)
 {
 		char		**cdpath;
 		char		*path_tmp;
@@ -172,7 +144,7 @@ char	*ft_checkpath(char *path, char ***env, t_opt opt)
 		}
 		if (!path_tmp)
 			path_tmp = ft_concatpath(path, *env, NULL);
-		if (!opt.P)
+		if (!opt_p)
 			path_tmp = ft_shortpath(path_tmp, 0, 0);
 		if (!lstat(path_tmp, &stat_tmp))
 		{
@@ -180,33 +152,33 @@ char	*ft_checkpath(char *path, char ***env, t_opt opt)
 				(stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
 					return (path_tmp);
 			else
-				ft_end_cd(-2, path, env, opt);
+				ft_end_cd(-2, path, env, opt_p);
 		}
 		else
-			ft_end_cd(-1, path, env, opt);
+			ft_end_cd(-1, path, env, opt_p);
 	return (NULL);
 }
 
 int	ft_cd(t_prompt *p, char ***env)
 {
 	char	*path;
-	t_opt	opt;
+	char	opt_p;
 	int		i;
 
-	opt = ft_create_option(p->tab_prompt, &i);
+	opt_p = ft_isoptp(p->tab_prompt, &i);
 	path = ft_strdup(p->tab_prompt[i]);
 	if (!path)
 	{
-		if ((path = ft_strdup(ft_getenv("HOME", *env))))
-			ft_end_cd(chdir(path), path, env, opt);
+		if (*env && (path = ft_strdup(ft_getenv("HOME", *env))))
+			ft_end_cd(chdir(path), path, env, opt_p);
 		else
 			ft_putendl_fd("cd: HOME not set.", 2);
 	}
 	else if (!ft_strcmp(path, "-"))
 	{
-		path = ft_getenv("OLDPWD", *env);
+		path = (*env) ? ft_getenv("OLDPWD", *env) : NULL;
 		if (path)
-			ft_end_cd(chdir(path), path, env, opt);
+			ft_end_cd(chdir(path), path, env, opt_p);
 		else
 			ft_putendl_fd("cd: OLDPWD not set.", 2);
 	}
@@ -215,19 +187,15 @@ int	ft_cd(t_prompt *p, char ***env)
 		if (path[0] == '/' || !ft_strncmp(path, "./", 2) ||
 			!ft_strncmp(path, "../", 3))
 		{
-			if (!ft_strncmp(path, "./", 2) || !ft_strncmp(path, "../", 3))
+			if (*env && (!ft_strncmp(path, "./", 2) || !ft_strncmp(path, "../", 3)))
 				path = ft_concatpath(path, *env, NULL);
-			if (!opt.P)
+			if (*env && !opt_p)
 				path = ft_shortpath(path, 0, 0);
 		}
-		else
-			path = ft_checkpath(path, env, opt);
+		else if (*env)
+			path = ft_checkpath(path, env, opt_p);
 		if (path)
-		{
-		//	if (opt.P)
-			//	ft_opt_p(path);
-			ft_end_cd(chdir(path), path, env, opt);
-		}
+			ft_end_cd(chdir(path), path, env, opt_p);
 	}
 	return (1);
 }

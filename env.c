@@ -28,6 +28,8 @@ char	*ft_getenv(char *var, char **env)
 	int		i;
 
 	i = 0;
+	if (!env)
+		return (NULL);
 	while (env[i])
 	{
 		if (!ft_strncmp(var, env[i], ft_strlen(var)) &&
@@ -73,7 +75,6 @@ char	**ft_createtab_for_setenv(char *name, char *value, char f)
 char	**ft_create_env(char **env)
 {
 	char	**new_env;
-	char	*pwd;
 
 	new_env = NULL;
 	if (env && *env)
@@ -85,9 +86,7 @@ char	**ft_create_env(char **env)
 	if (!(new_env = (char **)malloc(sizeof(char *) * 4)))
 		return (NULL);
 	new_env[0] = ft_strdup("PATH=/bin/");
-	if (!(pwd = ft_strnew(256)))
-		return (NULL);
-	new_env[1] = ft_strjoin("PWD=", getcwd(pwd, 256), 'N');
+	new_env[1] = ft_strjoin("PWD=", getcwd(NULL, 0), 'N');
 	new_env[2] = ft_strdup("SHLVL=1");
 	new_env[3] = NULL;
 	return (new_env);

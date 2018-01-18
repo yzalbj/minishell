@@ -22,24 +22,21 @@ int		main(int argc, char **argv, char **env)
 	(void)argv;
 	p.env = ft_create_env(env);
 	p.builtin = create_builtin_tab();
-	// ft_increase_shlvl(p.env);
 	while (1)
 	{
 		pwd = ft_getenv("PWD", p.env);
-		ft_putstr(pwd);
+		ft_putstr("\e[32m");
+		if (pwd)
+			ft_putstr(pwd);
+		else
+			ft_putchar('$');
+		ft_putstr("\e[0m");
 		ft_putstr(" > ");
 		ft_strdel(&pwd);
-
 		p.prompt = NULL;
+		signal(SIGINT, ft_exit);
 		get_next_line(0, &p.prompt);
-		p.tab_prompt = ft_strsplit(p.prompt, ' ');
-		// ft_printtab(p.tab_prompt);
-		int		i = 0;
-		while (p.tab_prompt[i])
-		{
-			p.tab_prompt[i] = ft_strtrim(p.tab_prompt[i]);
-			i++;
-		}
+		ft_manage_prompt(&p.tab_prompt, p.prompt, p.env);
 		if (!p.tab_prompt[0])
 			continue ;
 		process = fork();
@@ -51,7 +48,7 @@ int		main(int argc, char **argv, char **env)
 		else
 		{
 			wait(0);
-			ft_builtin(&p);
+			ft_builtin(&p, &p.env);
 		}
 	}
 	return (0);

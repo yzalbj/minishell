@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tabndup.c                                       :+:      :+:    :+:   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/10 16:54:30 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/10 17:46:41 by jblazy           ###   ########.fr       */
+/*   Created: 2018/01/17 12:31:53 by jblazy            #+#    #+#             */
+/*   Updated: 2018/01/17 12:31:58 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "./includes/minishell.h"
 
-char	**ft_tabndup(char **tab, size_t n)
+int		ft_echo(t_prompt *p, char **env)
 {
-	char	**new;
-	size_t	i;
+	int		i;
+	char	*var_env;
 
-	i = 0;
-	if (!(new = (char **)malloc(sizeof(char *) * (n + 1))))
-		return (NULL);
-	while (tab && tab[i] && i < n)
+	i = 1;
+	while (p->tab_prompt[i])
 	{
-		new[i] = ft_strdup(tab[i]);
+		if (p->tab_prompt[i][0] == '$' && p->tab_prompt[i][1])
+		{
+			var_env = ft_getenv(&p->tab_prompt[i][1], env);
+			ft_putstr(var_env);
+			ft_putchar(' ');
+			ft_strdel(&var_env);
+		}
+		else
+		{
+			ft_putstr(p->tab_prompt[i]);
+			ft_putchar(' ');
+		}
 		i++;
 	}
-	while (i < n + 1)
-	{
-		new[i] = NULL;
-		i++;
-	}
-	return (new);
+	ft_putchar('\n');
+	return (1);
 }

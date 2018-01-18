@@ -24,22 +24,6 @@ void ft_addslash_totab(char **tab)
 	}
 }
 
-// void ft_execve(char **tab_prompt, char *bin_to_exec, char **env)
-// {
-// 	if (execve(bin_to_exec, tab_prompt, env))
-// 	{
-// 		if (!all_path[i])
-// 		{
-// 			if (execve(tab_prompt[0], tab_prompt, env))
-// 			{
-// 				ft_putstr(tab_prompt[0]);
-// 				ft_putendl(": command not found.");
-// 				break;
-// 			}
-// 		}
-// 		ft_strdel(&bin);
-// 	}
-
 void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 {
 	char	*env_path;
@@ -48,8 +32,6 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	int		i;
 
 	env_path = ft_getenv("PATH", env);
-	// ft_putendl("PATH ==");
-	// ft_putendl(env_path);
 	all_path = ft_strsplit(env_path, ':');
 	i = 0;
 	ft_addslash_totab(all_path);
@@ -62,8 +44,11 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	i = 0;
 	if (!all_path)
 	{
-		ft_putstr(tab_prompt[0]);
-		ft_putendl(": command not found.");
+		if (execve(tab_prompt[0], tab_prompt, env))
+		{
+			ft_putstr(tab_prompt[0]);
+			ft_putendl(": command not found.");
+		}
 	}
 	while (all_path)
 	{
