@@ -37,8 +37,11 @@ int		main(int argc, char **argv, char **env)
 		signal(SIGINT, ft_exit);
 		get_next_line(0, &p.prompt);
 		ft_manage_prompt(&p.tab_prompt, p.prompt, p.env);
-		if (!p.tab_prompt[0])
+		if (!p.tab_prompt || !p.tab_prompt[0])
+		{
+			ft_putchar('\n');
 			continue ;
+		}
 		process = fork();
 		if (!process)
 		{

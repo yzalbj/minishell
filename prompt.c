@@ -19,7 +19,7 @@ void ft_manage_prompt(char ***tab_prompt, char *prompt, char **env)
 
 	i = 0;
 	*tab_prompt = ft_strsplit(prompt, ' ');
-	while ((*tab_prompt)[i])
+	while (*tab_prompt && (*tab_prompt)[i])
 	{
 		(*tab_prompt)[i] = ft_strtrim((*tab_prompt)[i]);
 		if ((*tab_prompt)[i][0] == '~')

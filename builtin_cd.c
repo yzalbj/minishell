@@ -46,7 +46,7 @@ void	ft_end_cd(int cd_ret, char *path, char ***env, char opt_p)
 			path = getcwd(NULL, 0);
 		ft_update_pwd(path, env);
 	}
-	if (cd_ret == -2)
+	else if (cd_ret == -2)
 	{
 		ft_putstr_fd("cd: Not a directory: ", 2);
 		ft_putendl_fd(path, 2);
