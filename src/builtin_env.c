@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/minishell.h"
+#include "../includes/minishell.h"
 
-void ft_env(t_prompt *p, char ***env)
+void ft_env(t_shell *s, char ***env)
 {
 	int		i;
 	char	**new_env;
@@ -22,16 +22,16 @@ void ft_env(t_prompt *p, char ***env)
 	i = 1;
 	if (!*env)
 		return ;
-	if (!p->tab_prompt[1])
+	if (!s->tab_prompt[1])
 		ft_printtab(*env);
-	else if (p->tab_prompt[1])
+	else if (s->tab_prompt[1])
 	{
-		if (!ft_strcmp(p->tab_prompt[1], "-i"))
+		if (!ft_strcmp(s->tab_prompt[1], "-i"))
 		{
 			i++;
 			// new_env = ft_create_env(NULL);
 			new_env = NULL;
-			if (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '='))
+			if (s->tab_prompt[i] && ft_strchr(s->tab_prompt[i], '='))
 			{
 				if (!(new_env = (char **)malloc(sizeof(char *) * 1)))
 					return ;
@@ -39,27 +39,27 @@ void ft_env(t_prompt *p, char ***env)
 			}
 			// new_env = (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '=')) ?
 			// 	ft_create_env(NULL) : NULL;
-			while (p->tab_prompt[i] && ft_strchr(p->tab_prompt[i], '='))
+			while (s->tab_prompt[i] && ft_strchr(s->tab_prompt[i], '='))
 			{
-				p->tab_prompt[i] = ft_strjoin("setenv=", p->tab_prompt[i], 'R');
-				new_var = ft_strsplit(p->tab_prompt[i], '=');
+				s->tab_prompt[i] = ft_strjoin("setenv=", s->tab_prompt[i], 'R');
+				new_var = ft_strsplit(s->tab_prompt[i], '=');
 				ft_setenv(new_var, &new_env);
 				i++;
 			}
 		}
 		else
-			new_env = ft_tabdup(p->env);
+			new_env = ft_tabdup(s->env);
 		process = fork();
 		if (!process)
 		{
-			ft_exec(p, &p->tab_prompt[i], new_env);
+			ft_exec(s, &s->tab_prompt[i], new_env);
 			exit(0);
 		}
 		else
 		{
 			wait(0);
-			p->tab_prompt = ft_tabdup(p->tab_prompt + i);
-			ft_builtin(p, &new_env);
+			s->tab_prompt = ft_tabdup(s->tab_prompt + i);
+			ft_builtin(s, &new_env);
 		}
 	}
 }

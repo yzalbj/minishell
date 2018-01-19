@@ -10,48 +10,40 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/minishell.h"
+#include "../includes/minishell.h"
 
 int		main(int argc, char **argv, char **env)
 {
-	t_prompt	p;
+	t_shell		s;
 	pid_t		process;
-	char		*pwd;
 
 	(void)argc;
 	(void)argv;
-	p.env = ft_create_env(env);
-	p.builtin = create_builtin_tab();
+	s.env = ft_create_env(env);
+	s.builtin = create_builtin_tab();
 	while (1)
 	{
-		pwd = ft_getenv("PWD", p.env);
-		ft_putstr("\e[32m");
-		if (pwd)
-			ft_putstr(pwd);
-		else
-			ft_putchar('$');
-		ft_putstr("\e[0m");
-		ft_putstr(" > ");
-		ft_strdel(&pwd);
-		p.prompt = NULL;
-		signal(SIGINT, ft_exit);
-		get_next_line(0, &p.prompt);
-		ft_manage_prompt(&p.tab_prompt, p.prompt, p.env);
-		if (!p.tab_prompt || !p.tab_prompt[0])
+		ft_display_prompt(s.env);
+		s.prompt = NULL;
+		signal(SIGINT, &ft_control_c);
+		 if (!get_next_line(0, &s.prompt))
+		 	exit (0);
+		ft_manage_prompt(&s.tab_prompt, s.prompt, s.env);
+		if (!s.tab_prompt || !s.tab_prompt[0])
 		{
-			ft_putchar('\n');
+			// ft_putchar('\n');
 			continue ;
 		}
 		process = fork();
 		if (!process)
 		{
-			ft_exec(&p, p.tab_prompt, p.env);
+			ft_exec(&s, s.tab_prompt, s.env);
 			return (0);
 		}
 		else
 		{
 			wait(0);
-			ft_builtin(&p, &p.env);
+			ft_builtin(&s, &s.env);
 		}
 	}
 	return (0);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/minishell.h"
+#include "../includes/minishell.h"
 
 void ft_addslash_totab(char **tab)
 {
@@ -24,7 +24,7 @@ void ft_addslash_totab(char **tab)
 	}
 }
 
-void ft_exec(t_prompt *p, char **tab_prompt, char **env)
+void ft_exec(t_shell *s, char **tab_prompt, char **env)
 {
 	char	*env_path;
 	char	**all_path;
@@ -35,9 +35,9 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 	all_path = ft_strsplit(env_path, ':');
 	i = 0;
 	ft_addslash_totab(all_path);
-	while (p->builtin[i])
+	while (s->builtin[i])
 	{
-		if (!ft_strcmp(p->builtin[i], tab_prompt[0]))
+		if (!ft_strcmp(s->builtin[i], tab_prompt[0]))
 			return ;
 		i++;
 	}
@@ -57,6 +57,8 @@ void ft_exec(t_prompt *p, char **tab_prompt, char **env)
 		{
 			if (!all_path[i])
 			{
+				ft_putendl("execve == ");
+				ft_putendl(tab_prompt[0]);
 				if (execve(tab_prompt[0], tab_prompt, env))
 				{
 					ft_putstr(tab_prompt[0]);

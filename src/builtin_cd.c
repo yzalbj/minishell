@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/minishell.h"
+#include "../includes/minishell.h"
 
 char	ft_isoptp(char **tab_prompt, int *i)
 {
@@ -159,14 +159,14 @@ char	*ft_checkpath(char *path, char ***env, char opt_p)
 	return (NULL);
 }
 
-int	ft_cd(t_prompt *p, char ***env)
+int	ft_cd(t_shell *s, char ***env)
 {
 	char	*path;
 	char	opt_p;
 	int		i;
 
-	opt_p = ft_isoptp(p->tab_prompt, &i);
-	path = ft_strdup(p->tab_prompt[i]);
+	opt_p = ft_isoptp(s->tab_prompt, &i);
+	path = ft_strdup(s->tab_prompt[i]);
 	if (!path)
 	{
 		if (*env && (path = ft_strdup(ft_getenv("HOME", *env))))

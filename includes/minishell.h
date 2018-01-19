@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <signal.h>
+# include <dirent.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 
@@ -26,26 +27,36 @@
 // 	int				P;
 // }					t_opt;
 
-typedef struct		s_prompt
+typedef	struct			s_prompt
+{
+	char				c;
+	char				*str;
+}						t_prompt;
+
+typedef struct			s_shell
 {
 	// char			*path_env;
-	char			**builtin;
-	char			**env;
-	char			*prompt;
-	char			**tab_prompt;
-}					t_prompt;
+	char				**builtin;
+	char				**env;
+	char				*prompt;
+	char				**tab_prompt;
+}						t_shell;
 
+void ft_control_c(int sig);
 /*
 **	BUILTIN_ECHO.C
 */
 
-int		ft_echo(t_prompt *p, char **env);
+int		ft_echo(t_shell *s, char **env);
 
 /*
 **	PROMPT.C
 */
 
-void ft_manage_prompt(char ***tab_prompt, char *prompt, char **env);
+char		*create_strprompt(t_list *begin);
+char		*ft_read_prompt(char **env);
+void		ft_display_prompt(char **env);
+void		ft_manage_prompt(char ***tab_prompt, char *prompt, char **env);
 
 /*
 **	BUILTIN.C
@@ -57,13 +68,14 @@ char	**create_builtin_tab(void);
 /*
 **	BUILTIN_CD.C
 */
-
-int	ft_cd(t_prompt *p, char ***env);
+char	*ft_concatpath(char *path, char **env, char *to_add);
+char	*ft_shortpath(char *path, int i, int j);
+int	ft_cd(t_shell *s, char ***env);
 /*
 **	BUILTIN_ENV.C
 */
 
-void ft_env(t_prompt *p, char ***env);
+void ft_env(t_shell *s, char ***env);
 int		ft_setenv(char **tab_prompt, char ***env);
 int		ft_unsetenv(char **tab_prompt, char ***env);
 /*
@@ -80,8 +92,8 @@ void ft_update_pwd(char *new_pwd, char ***env);
 **	EXEC.C
 */
 
-void ft_exec(t_prompt *p, char **tab_prompt, char **env);
+void ft_exec(t_shell *s, char **tab_prompt, char **env);
 
 void ft_exit(int ex);
-int ft_builtin(t_prompt *p, char ***env);
+int ft_builtin(t_shell *s, char ***env);
 #endif

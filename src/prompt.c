@@ -10,7 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
+
+void ft_display_prompt(char **env)
+{
+	char		*pwd;
+
+	pwd = ft_getenv("PWD", env);
+	ft_putstr("\e[32m");
+	if (pwd)
+		ft_putstr(pwd);
+	else
+		ft_putchar('$');
+	ft_putstr("\e[0m");
+	ft_putstr(" > ");
+	ft_strdel(&pwd);
+}
 
 void ft_manage_prompt(char ***tab_prompt, char *prompt, char **env)
 {
