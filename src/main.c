@@ -15,6 +15,7 @@
 int		main(int argc, char **argv, char **env)
 {
 	t_shell		s;
+	int			i;
 	pid_t		process;
 
 	(void)argc;
@@ -27,7 +28,7 @@ int		main(int argc, char **argv, char **env)
 		s.prompt = NULL;
 		signal(SIGINT, &ft_control_c);
 		 if (!get_next_line(0, &s.prompt))
-		 	exit (0);
+		 	ft_exit(&s, 0);
 		ft_manage_prompt(&s.tab_prompt, s.prompt, s.env);
 		if (!s.tab_prompt || !s.tab_prompt[0])
 		{
@@ -37,7 +38,14 @@ int		main(int argc, char **argv, char **env)
 		process = fork();
 		if (!process)
 		{
-			ft_exec(&s, s.tab_prompt, s.env);
+			i = 0;
+			while (s.builtin[i])
+			{
+				if (!ft_strcmp(s.builtin[i], s.tab_prompt[0]))
+					return (0);
+				i++;
+			}
+			ft_exec(s.tab_prompt, s.env);
 			return (0);
 		}
 		else
@@ -45,6 +53,8 @@ int		main(int argc, char **argv, char **env)
 			wait(0);
 			ft_builtin(&s, &s.env);
 		}
+		ft_strdel(&(s.prompt));
+		ft_freetab(&(s.tab_prompt));
 	}
 	return (0);
 }

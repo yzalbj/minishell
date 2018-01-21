@@ -92,8 +92,8 @@ void ft_update_pwd(char *new_pwd, char ***env);
 **	EXEC.C
 */
 
-void ft_exec(t_shell *s, char **tab_prompt, char **env);
+void ft_exec( char **tab_prompt, char **env);
 
-void ft_exit(int ex);
+void ft_exit(t_shell *s, int ex);
 int ft_builtin(t_shell *s, char ***env);
 #endif

@@ -12,9 +12,11 @@
 
 #include "../includes/minishell.h"
 
-void ft_exit(int ex)
+void ft_exit(t_shell *s, int ex)
 {
-	ft_putendl("lol ca qitte");
+	ft_strdel(&(s->prompt));
+	ft_freetab(&(s->tab_prompt));
+	ft_freetab(&(s->builtin));
 	exit(ex);
 }
 
@@ -36,47 +38,19 @@ char	**create_builtin_tab(void)
 
 int	ft_builtin(t_shell *s, char ***env)
 {
-	int		i;
-
-	i = 0;
-	while (s->builtin[i])
-	{
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 0)
-		{
-			ft_echo(s, *env);
-			return (1);
-		}
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 1)
-		{
-			ft_cd(s, env);
-			return (1);
-		}
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 2)
-		{
-			ft_setenv(s->tab_prompt, env);
-			return (1);
-		}
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 3)
-		{
-			ft_unsetenv(s->tab_prompt, env);
-			return (1);
-		}
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 4)
-		{
-			ft_env(s, env);
-			return (1);
-		}
-		if (!ft_strcmp(s->builtin[i], s->tab_prompt[0]) && i == 5)
-		{
-			// if (!p->tab_prompt[1] && p->tab_prompt[2])
-			// {
-			// 	ft_putendl("exit: too many arguments");
-			// 	return (-1);
-			// }
-			// else
-				ft_exit(0);
-		}
-		i++;
-	}
-	return (0);
+	if (!ft_strcmp(s->builtin[0], s->tab_prompt[0]))
+		ft_echo(s, *env);
+	else if (!ft_strcmp(s->builtin[1], s->tab_prompt[0]))
+		ft_cd(s, env);
+	else if (!ft_strcmp(s->builtin[2], s->tab_prompt[0]))
+		ft_setenv(s->tab_prompt, env);
+	else if (!ft_strcmp(s->builtin[3], s->tab_prompt[0]))
+		ft_unsetenv(s->tab_prompt, env);
+	else if (!ft_strcmp(s->builtin[4], s->tab_prompt[0]))
+		ft_env(s, env);
+	else if (!ft_strcmp(s->builtin[5], s->tab_prompt[0]))
+		ft_exit(s, 0);
+	else
+		return (0);
+	return (1);
 }

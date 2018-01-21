@@ -15,23 +15,14 @@
 int		ft_echo(t_shell *s, char **env)
 {
 	int		i;
-	char	*var_env;
 
 	i = 1;
+	if (!env)
+		ft_putendl("ah");
 	while (s->tab_prompt[i])
 	{
-		if (s->tab_prompt[i][0] == '$' && s->tab_prompt[i][1])
-		{
-			var_env = ft_getenv(&s->tab_prompt[i][1], env);
-			ft_putstr(var_env);
-			ft_putchar(' ');
-			ft_strdel(&var_env);
-		}
-		else
-		{
-			ft_putstr(s->tab_prompt[i]);
-			ft_putchar(' ');
-		}
+		ft_putstr(s->tab_prompt[i]);
+		ft_putchar(' ');
 		i++;
 	}
 	ft_putchar('\n');

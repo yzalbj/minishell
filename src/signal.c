@@ -14,6 +14,7 @@
 
 void ft_control_c(int sig)
 {
+	ft_putchar('\n');
 	if (sig)
-		ft_putstr("\n\e[32m$>\033[0m");
+		ft_display_prompt(NULL);
 }

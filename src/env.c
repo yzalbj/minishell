@@ -48,10 +48,12 @@ void ft_increase_shlvl(char **env)
 	char	**tab_prompt;
 	int		shlvl;
 
-	new_shlvl = ft_strdup(ft_getenv("SHLVL", env));
+	new_shlvl = ft_getenv("SHLVL", env);
 	shlvl = ft_atoi(new_shlvl);
 	shlvl++;
-	tab_prompt = ft_createtab_for_setenv("SHLVL", ft_itoa(shlvl), 'R');
+	ft_strdel(&new_shlvl);
+	new_shlvl = ft_itoa(shlvl);
+	tab_prompt = ft_createtab_for_setenv("SHLVL", new_shlvl, 'R');
 	ft_setenv(tab_prompt, &env);
 }
 

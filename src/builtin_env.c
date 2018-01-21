@@ -52,7 +52,7 @@ void ft_env(t_shell *s, char ***env)
 		process = fork();
 		if (!process)
 		{
-			ft_exec(s, &s->tab_prompt[i], new_env);
+			ft_exec(&s->tab_prompt[i], new_env);
 			exit(0);
 		}
 		else
@@ -140,6 +140,7 @@ int		ft_setenv(char **tab_prompt, char ***env)
 		if (!ft_strncmp(tab_prompt[1], (*env)[i], ft_strlen(tab_prompt[1])) &&
 			(*env)[i][ft_strlen(tab_prompt[1])] == '=')
 		{
+			ft_strdel(&(*env)[i]);
 			(*env)[i] = to_add;
 			return (0);
 		}
@@ -147,6 +148,8 @@ int		ft_setenv(char **tab_prompt, char ***env)
 	}
 	new_env = ft_tabndup(*env, i + 1);
 	new_env[i] = to_add;
+	ft_freetab(env);
 	*env = new_env;
+	ft_strdel(&to_add);
 	return (0);
 }
