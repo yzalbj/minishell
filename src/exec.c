@@ -6,13 +6,13 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/10 11:39:21 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/10 11:39:23 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/22 15:23:59 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void ft_addslash_totab(char **tab)
+void	ft_addslash_totab(char **tab)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void ft_addslash_totab(char **tab)
 	}
 }
 
-void ft_exec(char **tab_prompt, char **env)
+void	ft_exec(char **tab_prompt, char **builtin, char **env)
 {
 	char	*env_path;
 	char	**all_path;
@@ -33,33 +33,22 @@ void ft_exec(char **tab_prompt, char **env)
 
 	env_path = ft_getenv("PATH", env);
 	all_path = ft_strsplit(env_path, ':');
+	while (*builtin)
+	{
+		if (!ft_strcmp(*builtin++, tab_prompt[0]))
+			exit(0);
+	}
 	i = 0;
 	ft_addslash_totab(all_path);
-	if (!all_path)
-	{
-		if (execve(tab_prompt[0], tab_prompt, env))
-		{
-			ft_putstr(tab_prompt[0]);
-			ft_putendl(": command not found.");
-		}
-	}
-	while (all_path)
+	while (all_path && all_path[i])
 	{
 		bin = ft_strjoin(all_path[i], tab_prompt[0], 'N');
 		if (execve(bin, tab_prompt, env))
-		{
-			if (!all_path[i])
-			{
-				if (execve(tab_prompt[0], tab_prompt, env))
-				{
-					ft_putstr(tab_prompt[0]);
-					ft_putendl(": command not found.");
-					break;
-				}
-			}
-			ft_strdel(&bin);
 			i++;
-		}
 		ft_strdel(&bin);
 	}
+	execve(tab_prompt[0], tab_prompt, env);
+	ft_putstr(tab_prompt[0]);
+	ft_putendl(": command not found.");
+	exit(0);
 }

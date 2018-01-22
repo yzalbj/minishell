@@ -6,13 +6,13 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 18:15:27 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/19 18:15:37 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/22 15:17:49 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void ft_control_c(int sig)
+void	ft_control_c(int sig)
 {
 	ft_putchar('\n');
 	if (sig)

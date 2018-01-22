@@ -6,13 +6,13 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/10 12:37:08 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/10 12:37:25 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/22 15:22:36 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void ft_exit(t_shell *s, int ex)
+void	ft_exit(t_shell *s, int ex)
 {
 	ft_strdel(&(s->prompt));
 	ft_freetab(&(s->tab_prompt));
@@ -36,7 +36,7 @@ char	**create_builtin_tab(void)
 	return (builtin);
 }
 
-int	ft_builtin(t_shell *s, char ***env)
+int		ft_builtin(t_shell *s, char ***env)
 {
 	if (!ft_strcmp(s->builtin[0], s->tab_prompt[0]))
 		ft_echo(s, *env);

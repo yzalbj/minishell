@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/13 14:37:11 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/13 14:37:13 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/22 15:22:08 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,42 +120,42 @@ char	*ft_shortpath(char *path, int i, int j)
 
 char	*ft_checkpath(char *path, char ***env, char opt_p)
 {
-		char		**cdpath;
-		char		*path_tmp;
-		struct stat	stat_tmp;
-		int			i;
+	char		**cdpath;
+	char		*path_tmp;
+	struct stat	stat_tmp;
+	int			i;
 
-		cdpath = ft_strsplit(ft_getenv("CDPATH", *env), ':');
-		path_tmp = NULL;
-		i = 0;
-		while (cdpath && cdpath[i])
-		{
-			path_tmp = ft_concatpath(path, *env, cdpath[i]);
-			if (!lstat(path_tmp, &stat_tmp))
-			{
-				if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
-				{
-					ft_freetab(&cdpath);
-					break;
-				}
-			}
-			ft_strdel(&path_tmp);
-			i++;
-		}
-		if (!path_tmp)
-			path_tmp = ft_concatpath(path, *env, NULL);
-		if (!opt_p)
-			path_tmp = ft_shortpath(path_tmp, 0, 0);
+	cdpath = ft_strsplit(ft_getenv("CDPATH", *env), ':');
+	path_tmp = NULL;
+	i = 0;
+	while (cdpath && cdpath[i])
+	{
+		path_tmp = ft_concatpath(path, *env, cdpath[i]);
 		if (!lstat(path_tmp, &stat_tmp))
 		{
-			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR ||
-				(stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
-					return (path_tmp);
-			else
-				ft_end_cd(-2, path, env, opt_p);
+			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
+			{
+				ft_freetab(&cdpath);
+				break;
+			}
 		}
+		ft_strdel(&path_tmp);
+		i++;
+	}
+	if (!path_tmp)
+		path_tmp = ft_concatpath(path, *env, NULL);
+	if (!opt_p)
+		path_tmp = ft_shortpath(path_tmp, 0, 0);
+	if (!lstat(path_tmp, &stat_tmp))
+	{
+		if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR ||
+			(stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
+				return (path_tmp);
 		else
-			ft_end_cd(-1, path, env, opt_p);
+			ft_end_cd(-2, path, env, opt_p);
+	}
+	else
+		ft_end_cd(-1, path, env, opt_p);
 	return (NULL);
 }
 

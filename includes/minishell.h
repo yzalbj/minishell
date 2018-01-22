@@ -56,7 +56,7 @@ int		ft_echo(t_shell *s, char **env);
 char		*create_strprompt(t_list *begin);
 char		*ft_read_prompt(char **env);
 void		ft_display_prompt(char **env);
-void		ft_manage_prompt(char ***tab_prompt, char *prompt, char **env);
+void		ft_manage_prompt(t_shell *s);
 
 /*
 **	BUILTIN.C
@@ -92,7 +92,7 @@ void ft_update_pwd(char *new_pwd, char ***env);
 **	EXEC.C
 */
 
-void ft_exec( char **tab_prompt, char **env);
+void	ft_exec(char **tab_prompt, char **builtin, char **env);
 
 void ft_exit(t_shell *s, int ex);
 int ft_builtin(t_shell *s, char ***env);
