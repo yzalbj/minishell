@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/09 12:27:04 by jblazy            #+#    #+#             */
-/*   Updated: 2017/11/16 18:36:17 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:48:12 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	**ft_strsplit(char const *s, char c)
 		return (NULL);
 	while (index < count)
 	{
-		if (*s && *s != c && (begin == s - 1 || *(s - 1) == c ))
+		if (*s && *s != c && (begin == s - 1 || *(s - 1) == c))
 		{
 			if (!(tab[index] = ft_strnew(ft_wordlen(s, c))))
 				return (NULL);

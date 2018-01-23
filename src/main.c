@@ -17,6 +17,7 @@ int		main(int argc, char **argv, char **env)
 	t_shell		s;
 	pid_t		process;
 
+	ft_putendl("new shell");
 	s.env = ft_create_env(env);
 	s.builtin = create_builtin_tab();
 	while (argc && argv)
@@ -32,6 +33,7 @@ int		main(int argc, char **argv, char **env)
 			wait(0);
 			ft_builtin(&s, &s.env);
 		}
+		ft_strdel(&(s.prompt));
 		ft_freetab(&(s.tab_prompt));
 	}
 	return (0);

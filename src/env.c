@@ -17,11 +17,12 @@ void	ft_update_pwd(char *new_pwd, char ***env)
 	char	**new_var;
 
 	new_var = ft_createtab_for_setenv("OLDPWD",
-		ft_getenv("PWD", *env), 'N');
+		ft_getenv("PWD", *env), 'R');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
 	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'R');
 	ft_setenv(new_var, env);
+	ft_freetab(&new_var);
 }
 
 char	*ft_getenv(char *var, char **env)
@@ -43,19 +44,25 @@ char	*ft_getenv(char *var, char **env)
 	return (NULL);
 }
 
-void	ft_increase_shlvl(char **env)
+void	ft_increase_shlvl(char ***env)
 {
 	char	*new_shlvl;
 	char	**tab_prompt;
 	int		shlvl;
 
-	new_shlvl = ft_getenv("SHLVL", env);
-	shlvl = ft_atoi(new_shlvl);
-	shlvl++;
-	ft_strdel(&new_shlvl);
-	new_shlvl = ft_itoa(shlvl);
-	tab_prompt = ft_createtab_for_setenv("SHLVL", new_shlvl, 'R');
-	ft_setenv(tab_prompt, &env);
+	new_shlvl = ft_getenv("SHLVL", *env);
+	if (!new_shlvl)
+		tab_prompt = ft_createtab_for_setenv("SHLVL", "1", 'N');
+	else
+	{
+		shlvl = ft_atoi(new_shlvl);
+		shlvl++;
+		ft_strdel(&new_shlvl);
+		new_shlvl = ft_itoa(shlvl);
+		tab_prompt = ft_createtab_for_setenv("SHLVL", new_shlvl, 'R');
+	}
+	ft_setenv(tab_prompt, env);
+	ft_freetab(&tab_prompt);
 }
 
 char	**ft_createtab_for_setenv(char *name, char *value, char f)
@@ -66,7 +73,7 @@ char	**ft_createtab_for_setenv(char *name, char *value, char f)
 		return (NULL);
 	tab[0] = ft_strdup("setenv");
 	tab[1] = ft_strjoin(name, "=", 'N');
-	tab[1] = ft_strjoin(tab[1], value, 'N');
+	tab[1] = ft_strjoin(tab[1], value, 'L');
 	tab[2] = NULL;
 	if (f == 'L' || f == 'B')
 		ft_strdel(&name);
@@ -78,19 +85,24 @@ char	**ft_createtab_for_setenv(char *name, char *value, char f)
 char	**ft_create_env(char **env)
 {
 	char	**new_env;
+	char	**new_var;
+	char	flag;
 
-	new_env = NULL;
-	if (env && *env)
-	{
-		new_env = ft_tabdup(env);
-		ft_increase_shlvl(new_env);
-		return (new_env);
-	}
-	if (!(new_env = (char **)malloc(sizeof(char *) * 4)))
+	if (!*env)
+		flag = 1;
+	else
+		flag = 0;
+	if (!(new_env = ft_tabdup(env)))
 		return (NULL);
-	new_env[0] = ft_strdup("PATH=/bin/");
-	new_env[1] = ft_strjoin("PWD=", getcwd(NULL, 0), 'N');
-	new_env[2] = ft_strdup("SHLVL=1");
-	new_env[3] = NULL;
+	if (flag)
+	{
+		new_var = ft_createtab_for_setenv("PATH", "/bin/", 'N');
+		ft_setenv(new_var, &new_env);
+		ft_freetab(&new_var);
+		new_var = ft_createtab_for_setenv("PWD", getcwd(NULL, 0), 'R');
+		ft_setenv(new_var, &new_env);
+		ft_freetab(&new_var);
+	}
+	ft_increase_shlvl(&new_env);
 	return (new_env);
 }

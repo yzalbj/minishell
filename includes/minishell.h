@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 16:48:52 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/09 16:49:24 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:47:06 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,79 +21,87 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
-// typedef struct		s_opt
-// {
-// 	int				L;
-// 	int				P;
-// }					t_opt;
-
-typedef	struct			s_prompt
+typedef	struct	s_prompt
 {
-	char				c;
-	char				*str;
-}						t_prompt;
+	char		c;
+	char		*str;
+}				t_prompt;
 
-typedef struct			s_shell
+typedef struct	s_shell
 {
-	// char			*path_env;
-	char				**builtin;
-	char				**env;
-	char				*prompt;
-	char				**tab_prompt;
-}						t_shell;
-
-void ft_control_c(int sig);
-/*
-**	BUILTIN_ECHO.C
-*/
-
-int		ft_echo(t_shell *s, char **env);
+	char		**builtin;
+	char		**env;
+	char		*prompt;
+	char		**tab_prompt;
+}				t_shell;
 
 /*
-**	PROMPT.C
+**	signal.c
 */
 
-char		*create_strprompt(t_list *begin);
-char		*ft_read_prompt(char **env);
-void		ft_display_prompt(char **env);
-void		ft_manage_prompt(t_shell *s);
+void			ft_control_c(int sig);
 
 /*
-**	BUILTIN.C
+**	builtin_echo.c
 */
 
-
-char	**create_builtin_tab(void);
+int				ft_echo(t_shell *s);
 
 /*
-**	BUILTIN_CD.C
-*/
-char	*ft_concatpath(char *path, char **env, char *to_add);
-char	*ft_shortpath(char *path, int i, int j);
-int	ft_cd(t_shell *s, char ***env);
-/*
-**	BUILTIN_ENV.C
+**	prompt.c
 */
 
-void ft_env(t_shell *s, char ***env);
-int		ft_setenv(char **tab_prompt, char ***env);
-int		ft_unsetenv(char **tab_prompt, char ***env);
-/*
-**	ENV.C
-*/
-
-char	**ft_create_env(char **env);
-void ft_increase_shlvl(char **env);
-char	**ft_createtab_for_setenv(char *name, char *value, char f);
-char	*ft_getenv(char *var, char **env);
-void ft_update_pwd(char *new_pwd, char ***env);
+void			ft_display_prompt(char **env);
+void			ft_manage_prompt(t_shell *s);
 
 /*
-**	EXEC.C
+**	builtin.c
 */
 
-void	ft_exec(char **tab_prompt, char **builtin, char **env);
+int				ft_builtin(t_shell *s, char ***env);
+char			**create_builtin_tab(void);
 
-void ft_exit(t_shell *s, int ex);
-int ft_builtin(t_shell *s, char ***env);
+/*
+**	builtin_cd_utils.c
+*/
+
+char			*ft_concatpath(char *path, char **env, char *to_add);
+void			ft_shortpath(char **path, int i, int j);
+char			ft_isoptp(char **tab_prompt, int *i);
+
+/*
+**	builtin_cd.c
+*/
+
+void			ft_cd(t_shell *s, char ***env);
+
+/*
+**	builtin_setenv.c
+*/
+
+int				ft_setenv(char **tab_prompt, char ***env);
+int				ft_unsetenv(char **tab_prompt, char ***env);
+
+/*
+**	builtin_env.c
+*/
+
+void			ft_env(t_shell *s, char ***env);
+
+/*
+**	env.c
+*/
+
+char			**ft_create_env(char **env);
+void			ft_increase_shlvl(char ***env);
+char			**ft_createtab_for_setenv(char *name, char *value, char f);
+char			*ft_getenv(char *var, char **env);
+void			ft_update_pwd(char *new_pwd, char ***env);
+
+/*
+**	exec.c
+*/
+
+void			ft_exec(char **tab_prompt, char **builtin, char **env);
+void			ft_exit(t_shell *s, int ex);
 #endif

@@ -17,7 +17,7 @@ void	ft_freetab(char ***tab)
 	int		i;
 
 	i = 0;
-	while ((*tab)[i])
+	while (*tab && (*tab)[i])
 	{
 		ft_strdel(&(*tab)[i]);
 		i++;

@@ -74,6 +74,7 @@ char	*ft_rpl_dollars(char *prompt, char **env)
 	int		j;
 	char	*to_search;
 	char	*var_env;
+	char	*tmp;
 
 	i = 0;
 	while (prompt[i])
@@ -86,9 +87,14 @@ char	*ft_rpl_dollars(char *prompt, char **env)
 			to_search = ft_strndup(&prompt[i + 1], j - i);
 			if ((var_env = ft_getenv(to_search, env)))
 			{
-				prompt = ft_strreplace(prompt, var_env, i, j);
+				tmp = ft_strreplace(prompt, var_env, i, j);
+				ft_strdel(&prompt);
+				prompt = tmp;
+				// ft_strdel(&prompt);
+				ft_strdel(&var_env);
 				i = j;
 			}
+			ft_strdel(&to_search);
 		}
 		i++;
 	}

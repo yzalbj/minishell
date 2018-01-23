@@ -39,7 +39,7 @@ char	**create_builtin_tab(void)
 int		ft_builtin(t_shell *s, char ***env)
 {
 	if (!ft_strcmp(s->builtin[0], s->tab_prompt[0]))
-		ft_echo(s, *env);
+		ft_echo(s);
 	else if (!ft_strcmp(s->builtin[1], s->tab_prompt[0]))
 		ft_cd(s, env);
 	else if (!ft_strcmp(s->builtin[2], s->tab_prompt[0]))

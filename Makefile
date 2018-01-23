@@ -3,7 +3,7 @@ NAME = minishell
 FLAGS = -g -Wall -Wextra -Werror
 
 SRC = builtin.c builtin_env.c env.c exec.c main.c builtin_cd.c prompt.c\
-	builtin_echo.c signal.c
+	builtin_echo.c signal.c builtin_setenv.c builtin_cd_utils.c
 
 OBJ_TMP = $(SRC:.c=.o)
 

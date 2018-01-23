@@ -12,13 +12,11 @@
 
 #include "../includes/minishell.h"
 
-int		ft_echo(t_shell *s, char **env)
+int		ft_echo(t_shell *s)
 {
 	int		i;
 
 	i = 1;
-	if (!env)
-		ft_putendl("ah");
 	while (s->tab_prompt[i])
 	{
 		ft_putstr(s->tab_prompt[i]);

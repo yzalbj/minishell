@@ -6,13 +6,13 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/11 16:28:56 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/11 16:29:10 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:48:46 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void ft_printtab(char **tab)
+void	ft_printtab(char **tab)
 {
 	int		i;
 

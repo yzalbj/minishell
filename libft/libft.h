@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 10:32:02 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/13 19:06:56 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:47:58 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <string.h>
 
 # define BUFF_SIZE 8
+
 typedef	struct		s_list
 {
 	void			*content;
@@ -132,7 +133,7 @@ void				ft_strdel(char **as);
 ** PRINT FUNCTIONS
 */
 
-void ft_printtab(char **tab);
+void				ft_printtab(char **tab);
 void				ft_putchar(char c);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr(char const *s);

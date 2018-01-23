@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 13:09:06 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/22 13:09:17 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:49:36 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ char	*ft_strreplace(char *src, char *to_replace, size_t begin, size_t end)
 
 	if (end < begin || !src)
 		return (NULL);
-	if (!(new = ft_strnew(begin + ft_strlen(to_replace))))
+	if (!(new = ft_strnew(begin)))
 		return (NULL);
 	ft_strncpy(new, src, begin);
-	new  = ft_strjoin(new, to_replace, 'L');
+	new = ft_strjoin(new, to_replace, 'L');
 	new = ft_strjoin(new, &src[end], 'L');
 	return (new);
 }
