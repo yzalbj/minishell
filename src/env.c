@@ -20,7 +20,7 @@ void	ft_update_pwd(char *new_pwd, char ***env)
 		ft_getenv("PWD", *env), 'R');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
-	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'R');
+	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'N');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
 }
@@ -86,23 +86,26 @@ char	**ft_create_env(char **env)
 {
 	char	**new_env;
 	char	**new_var;
-	char	flag;
+	char	*check;
 
-	if (!*env)
-		flag = 1;
-	else
-		flag = 0;
 	if (!(new_env = ft_tabdup(env)))
 		return (NULL);
-	if (flag)
+	if (!(check = ft_getenv("PATH", new_env)))
 	{
 		new_var = ft_createtab_for_setenv("PATH", "/bin/", 'N');
 		ft_setenv(new_var, &new_env);
 		ft_freetab(&new_var);
+	}
+	else
+		ft_strdel(&check);
+	if (!(check = ft_getenv("PWD", new_env)))
+	{
 		new_var = ft_createtab_for_setenv("PWD", getcwd(NULL, 0), 'R');
 		ft_setenv(new_var, &new_env);
 		ft_freetab(&new_var);
 	}
+	else
+		ft_strdel(&check);
 	ft_increase_shlvl(&new_env);
 	return (new_env);
 }

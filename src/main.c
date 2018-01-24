@@ -17,14 +17,17 @@ int		main(int argc, char **argv, char **env)
 	t_shell		s;
 	pid_t		process;
 
-	ft_putendl("new shell");
 	s.env = ft_create_env(env);
 	s.builtin = create_builtin_tab();
 	while (argc && argv)
 	{
 		ft_manage_prompt(&s);
 		if (!s.tab_prompt || !s.tab_prompt[0])
+		{
+			ft_strdel(&(s.prompt));
+			ft_freetab(&(s.tab_prompt));
 			continue ;
+		}
 		process = fork();
 		if (!process)
 			ft_exec(s.tab_prompt, s.builtin, s.env);

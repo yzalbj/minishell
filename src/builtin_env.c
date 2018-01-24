@@ -40,7 +40,7 @@ void	ft_changetab_forenv(t_shell *s, char ***env, char ***new_env, int *i)
 	}
 	else if (s->tab_prompt[1][0] == '-' && s->tab_prompt[1][1] && !(*i = 0))
 		ft_printerrror(s->tab_prompt[1][1]);
-	while (i > 0 && s->tab_prompt[*i] && ft_strchr(s->tab_prompt[*i], '='))
+	while (*i > 0 && s->tab_prompt[*i] && ft_strchr(s->tab_prompt[*i], '='))
 	{
 		new_var = ft_strsplit(s->tab_prompt[*i], '=');
 		tab_setenv = ft_createtab_for_setenv(new_var[0], new_var[1], 'N');

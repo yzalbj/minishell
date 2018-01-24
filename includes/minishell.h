@@ -65,7 +65,8 @@ char			**create_builtin_tab(void);
 **	builtin_cd_utils.c
 */
 
-char			*ft_concatpath(char *path, char **env, char *to_add);
+char			*ft_concatpath(char *path, char **env,
+					char *to_add, char free_path);
 void			ft_shortpath(char **path, int i, int j);
 char			ft_isoptp(char **tab_prompt, int *i);
 

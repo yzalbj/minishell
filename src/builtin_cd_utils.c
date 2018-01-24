@@ -42,7 +42,7 @@ char	ft_isoptp(char **tab_prompt, int *i)
 **	WHEN TO ADD IS NULL, WE ADD THE PWD TO PATH
 */
 
-char	*ft_concatpath(char *path, char **env, char *to_add)
+char	*ft_concatpath(char *path, char **env, char *to_add, char free_path)
 {
 	char	*tmp;
 	int		i;
@@ -52,11 +52,14 @@ char	*ft_concatpath(char *path, char **env, char *to_add)
 	else
 		tmp = ft_strdup(to_add);
 	i = 0;
-	while (tmp[i + 1])
+	while (tmp && tmp[i + 1])
 		i++;
-	if (tmp[i] != '/')
+	if (tmp && tmp[i] != '/')
 		tmp = ft_strjoin(tmp, "/", 'L');
-	path = ft_strjoin(tmp, path, 'L');
+	if (free_path)
+		path = ft_strjoin(tmp, path, 'B');
+	else
+		path = ft_strjoin(tmp, path, 'L');
 	return (path);
 }
 

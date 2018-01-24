@@ -20,24 +20,24 @@ void	ft_end_cd(int cd_ret, char *path, char ***env, char opt_p)
 			path = getcwd(NULL, 0);
 		ft_update_pwd(path, env);
 	}
-	else if (cd_ret == -2)
+	else
 	{
-		ft_putstr_fd("cd: Not a directory: ", 2);
-		ft_putendl_fd(path, 2);
-		ft_strdel(&path);
+		if (cd_ret == -3)
+			ft_putendl_fd("cd: Too many arguments.", 2);
+		else if (cd_ret == -4)
+			ft_putendl_fd("cd: PWD not set.", 2);
+		else
+		{
+			if (cd_ret == -2)
+				ft_putstr_fd("cd: Not a directory: ", 2);
+			else if (access(path, F_OK) == -1)
+				ft_putstr_fd("cd: No such file or directory: ", 2);
+			else if (access(path, X_OK) == -1)
+				ft_putstr_fd("cd: Permission denied: ", 2);
+			ft_putendl_fd(path, 2);
+		}
 	}
-	else if (access(path, F_OK) == -1)
-	{
-		ft_putstr_fd("cd: No such file or directory: ", 2);
-		ft_putendl_fd(path, 2);
-		ft_strdel(&path);
-	}
-	else if (access(path, X_OK) == -1)
-	{
-		ft_putstr_fd("cd: Permission denied: ", 2);
-		ft_putendl_fd(path	, 2);
-		ft_strdel(&path);
-	}
+	ft_strdel(&path);
 }
 
 char	*ft_check_cdpath(char *path, char ***env)
@@ -47,23 +47,23 @@ char	*ft_check_cdpath(char *path, char ***env)
 	struct stat	stat_tmp;
 	int			i;
 
-	path_tmp = NULL;
-	cdpath = ft_strsplit(ft_getenv("CDPATH", *env), ':');
+	path_tmp = ft_getenv("CDPATH", *env);
+	cdpath = ft_strsplit(path_tmp, ':');
+	ft_strdel(&path_tmp);
 	i = 0;
 	while (cdpath && cdpath[i])
 	{
-		path_tmp = ft_concatpath(path, *env, cdpath[i]);
+		path_tmp = ft_concatpath(path, *env, cdpath[i], 0);
 		if (!lstat(path_tmp, &stat_tmp))
 		{
 			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
-			{
-				ft_freetab(&cdpath);
 				break ;
-			}
 		}
 		ft_strdel(&path_tmp);
 		i++;
 	}
+	if (cdpath)
+		ft_freetab(&cdpath);
 	return (path_tmp);
 }
 
@@ -75,31 +75,44 @@ char	*ft_checkpath(char *path, char ***env, char opt_p)
 	path_tmp = NULL;
 	path_tmp = ft_check_cdpath(path, env);
 	if (!path_tmp)
-		path_tmp = ft_concatpath(path, *env, NULL);
-	if (!opt_p)
+		path_tmp = ft_concatpath(path, *env, NULL, 0);
+	if (!opt_p && path_tmp)
 		ft_shortpath(&path_tmp, 0, 0);
 	if (!lstat(path_tmp, &stat_tmp))
 	{
 		if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR ||
 				(stat_tmp.st_mode & S_IFLNK) == S_IFLNK)
+		{
+			ft_strdel(&path);
 			return (path_tmp);
-		else
-			ft_end_cd(-2, path, env, opt_p);
+		}
+		ft_end_cd(-2, path, env, opt_p);
 	}
 	else
 		ft_end_cd(-1, path, env, opt_p);
+	if (path_tmp)
+		ft_strdel(&path_tmp);
 	return (NULL);
 }
 
 void	ft_cd2(char *path, char opt_p, char ***env)
 {
+	char	*tmp;
+
+	if ((tmp = ft_getenv("PWD", *env)))
+		ft_strdel(&tmp);
+	else
+	{
+		ft_end_cd(-4, path, env, opt_p);
+		return ;
+	}
 	if (path[0] == '/' || !ft_strncmp(path, "./", 2) ||
 		!ft_strncmp(path, "../", 3))
 	{
 		if (*env && (!ft_strncmp(path, "./", 2) ||
 				!ft_strncmp(path, "../", 3)))
-			path = ft_concatpath(path, *env, NULL);
-		if (*env && !opt_p)
+			path = ft_concatpath(path, *env, NULL, 1);
+		if (*env && !opt_p && path)
 			ft_shortpath(&path, 0, 0);
 	}
 	else if (*env)
@@ -116,8 +129,8 @@ void	ft_cd(t_shell *s, char ***env)
 
 	opt_p = ft_isoptp(s->tab_prompt, &i);
 	path = ft_strdup(s->tab_prompt[i]);
-	if (s->tab_prompt[i + 1] && s->tab_prompt[1])
-		ft_putendl_fd("cd: Too many arguments.", 2);
+	if (s->tab_prompt[i] && s->tab_prompt[i + 1] && s->tab_prompt[1])
+		ft_end_cd(chdir(path), path, env, opt_p);
 	else if (!path)
 	{
 		if (*env && (path = ft_getenv("HOME", *env)))
@@ -127,6 +140,7 @@ void	ft_cd(t_shell *s, char ***env)
 	}
 	else if (!ft_strcmp(path, "-"))
 	{
+		ft_strdel(&path);
 		path = (*env) ? ft_getenv("OLDPWD", *env) : NULL;
 		if (path)
 			ft_end_cd(chdir(path), path, env, opt_p);
