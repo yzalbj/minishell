@@ -12,6 +12,22 @@
 
 #include "../includes/minishell.h"
 
+void	ft_checkpwd(char ***env)
+{
+	char	*tmp;
+	char	**reset_pwd;
+
+	ft_singleton_env(*env);
+	if (!(tmp = ft_getenv("PWD", *env)) || !tmp[0])
+	{
+		reset_pwd = ft_createtab_for_setenv("PWD", getcwd(NULL, 0), 'R');
+		ft_setenv(reset_pwd, env);
+		ft_freetab(&reset_pwd);
+	}
+	if (tmp)
+		ft_strdel(&tmp);
+}
+
 void	ft_process(t_shell *s)
 {
 	pid_t		process;
@@ -24,6 +40,8 @@ void	ft_process(t_shell *s)
 		wait(0);
 		ft_builtin(s, &s->env);
 	}
+	ft_freetab(&(s->tab_prompt));
+	ft_strdel(&(s->prompt));
 }
 
 int		main(int argc, char **argv, char **env)
@@ -34,6 +52,7 @@ int		main(int argc, char **argv, char **env)
 	s.builtin = create_builtin_tab();
 	while (argc && argv)
 	{
+		ft_checkpwd(&s.env);
 		ft_manage_prompt(&s);
 		if (!s.tab_prompt || !s.tab_prompt[0])
 		{
@@ -42,8 +61,6 @@ int		main(int argc, char **argv, char **env)
 			continue ;
 		}
 		ft_process(&s);
-		ft_strdel(&(s.prompt));
-		ft_freetab(&(s.tab_prompt));
 	}
 	return (0);
 }

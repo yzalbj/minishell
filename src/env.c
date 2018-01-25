@@ -12,20 +12,20 @@
 
 #include "../includes/minishell.h"
 
-void	ft_update_pwd(char *new_pwd, char ***env, char opt_p)
+void	ft_update_pwd(char **new_pwd, char ***env, char opt_p)
 {
 	char	**new_var;
 
 	if (opt_p)
-		ft_strdel(&new_pwd);
+		ft_strdel(&(*new_pwd));
 	if (opt_p)
-		new_pwd = getcwd(NULL, 0);
+		*new_pwd = getcwd(NULL, 0);
 	new_var = ft_createtab_for_setenv("OLDPWD", ft_getenv("PWD", *env), 'R');
 	if (!new_var)
 		new_var = ft_createtab_for_setenv("OLDPWD", "/", 'N');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
-	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'N');
+	new_var = ft_createtab_for_setenv("PWD", *new_pwd, 'N');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
 }

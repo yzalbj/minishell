@@ -15,13 +15,11 @@
 void	ft_end_cd(int cd_ret, char *path, char ***env, char opt_p)
 {
 	if (!cd_ret)
-		ft_update_pwd(path, env, opt_p);
+		ft_update_pwd(&path, env, opt_p);
 	else
 	{
 		if (cd_ret == -3)
 			ft_putendl_fd("cd: Too many arguments.", 2);
-		else if (cd_ret == -4)
-			ft_putendl_fd("cd: PWD not set.", 2);
 		else
 		{
 			if (cd_ret == -2)
@@ -93,15 +91,6 @@ char	*ft_checkpath(char *path, char ***env, char opt_p)
 
 void	ft_cd2(char *path, char opt_p, char ***env)
 {
-	char	*tmp;
-
-	if ((tmp = ft_getenv("PWD", *env)))
-		ft_strdel(&tmp);
-	else
-	{
-		ft_end_cd(-4, path, env, opt_p);
-		return ;
-	}
 	if (path[0] == '/' || !ft_strncmp(path, "./", 2) ||
 		!ft_strncmp(path, "../", 3))
 	{

@@ -35,11 +35,14 @@ typedef struct	s_shell
 	char		**tab_prompt;
 }				t_shell;
 
+void	ft_checkpwd(char ***env);
+
 /*
 **	signal.c
 */
 
 void			ft_control_c(int sig);
+char			**ft_singleton_env(char **env);
 
 /*
 **	builtin_echo.c
@@ -97,7 +100,7 @@ char			**ft_create_env(char **env);
 void			ft_increase_shlvl(char ***env);
 char			**ft_createtab_for_setenv(char *name, char *value, char f);
 char			*ft_getenv(char *var, char **env);
-void			ft_update_pwd(char *new_pwd, char ***env, char opt_p);
+void			ft_update_pwd(char **new_pwd, char ***env, char opt_p);
 
 /*
 **	exec.c

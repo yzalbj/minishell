@@ -12,6 +12,15 @@
 
 #include "../includes/minishell.h"
 
+void	ft_exec_error(char *tab_prompt)
+{
+	ft_putstr_fd(tab_prompt, 2);
+	if (access(tab_prompt, X_OK) == -1 && access(tab_prompt, F_OK) == 0)
+		ft_putendl_fd(": permission denied.", 2);
+	else
+		ft_putendl_fd(": command not found.", 2);
+}
+
 void	ft_addslash_totab(char **tab)
 {
 	int	i;
@@ -48,7 +57,6 @@ void	ft_exec(char **tab_prompt, char **builtin, char **env)
 		ft_strdel(&bin);
 	}
 	execve(tab_prompt[0], tab_prompt, env);
-	ft_putstr(tab_prompt[0]);
-	ft_putendl(": command not found.");
-	exit(0);
+	ft_exec_error(tab_prompt[0]);
+	exit(-1);
 }

@@ -27,20 +27,26 @@ void	ft_display_prompt(char **env)
 	ft_strdel(&pwd);
 }
 
-void	ft_rmtab(char **prompt)
+void	ft_rmtab(char **prompt, int i, int j)
 {
-	int		i;
 	char	*new;
 
-	if (!(new = ft_strnew(ft_strlen((*prompt)))))
-		return ;
-	i = 0;
 	while ((*prompt)[i])
 	{
-		if ((*prompt)[i] != '\t')
-			new[i] = (*prompt)[i];
-		else
-			new[i] = ' ';
+		(*prompt)[i] != '"' && (*prompt)[i] != '\'' ? j++ : 0;
+		i++;
+	}
+	if (!(new = ft_strnew(j)))
+		return ;
+	i = 0;
+	j = 0;
+	while ((*prompt)[i])
+	{
+		if ((*prompt)[i] != '\t' && (*prompt)[i] != '"' && (*prompt)[i] != '\'')
+			new[j] = (*prompt)[i];
+		else if ((*prompt)[i] != '"' && (*prompt)[i] != '\'')
+			new[j] = ' ';
+		(*prompt)[i] != '"' && (*prompt)[i] != '\'' ? j++ : 0;
 		i++;
 	}
 	ft_strdel(prompt);
@@ -98,7 +104,7 @@ void	ft_manage_prompt(t_shell *s)
 	s->prompt = NULL;
 	if (!get_next_line(0, &(s->prompt)))
 		ft_exit(s, 0);
-	ft_rmtab(&(s->prompt));
+	ft_rmtab(&(s->prompt), 0, 0);
 	while (s->prompt[i])
 	{
 		if (s->prompt[i] == '~' && (s->prompt[i + 1] == '/'

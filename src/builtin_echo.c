@@ -15,12 +15,17 @@
 int		ft_echo(t_shell *s)
 {
 	int		i;
+	char	*tmp;
 
 	i = 1;
 	while (s->tab_prompt[i])
 	{
-		ft_putstr(s->tab_prompt[i]);
-		ft_putchar(' ');
+		if (!(tmp = ft_strchr(s->tab_prompt[i], '$')) ||
+			((tmp = ft_strchr(s->tab_prompt[i], '$')) && !*(tmp + 1)))
+		{
+			ft_putstr(s->tab_prompt[i]);
+			ft_putchar(' ');
+		}
 		i++;
 	}
 	ft_putchar('\n');
