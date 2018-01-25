@@ -15,11 +15,7 @@
 void	ft_end_cd(int cd_ret, char *path, char ***env, char opt_p)
 {
 	if (!cd_ret)
-	{
-		if (opt_p)
-			path = getcwd(NULL, 0);
-		ft_update_pwd(path, env);
-	}
+		ft_update_pwd(path, env, opt_p);
 	else
 	{
 		if (cd_ret == -3)
@@ -121,16 +117,15 @@ void	ft_cd2(char *path, char opt_p, char ***env)
 		ft_end_cd(chdir(path), path, env, opt_p);
 }
 
-void	ft_cd(t_shell *s, char ***env)
+void	ft_cd(t_shell *s, char ***env, int i)
 {
 	char	*path;
 	char	opt_p;
-	int		i;
 
 	opt_p = ft_isoptp(s->tab_prompt, &i);
 	path = ft_strdup(s->tab_prompt[i]);
 	if (s->tab_prompt[i] && s->tab_prompt[i + 1] && s->tab_prompt[1])
-		ft_end_cd(chdir(path), path, env, opt_p);
+		ft_end_cd(-3, path, env, opt_p);
 	else if (!path)
 	{
 		if (*env && (path = ft_getenv("HOME", *env)))

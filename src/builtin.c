@@ -41,7 +41,7 @@ int		ft_builtin(t_shell *s, char ***env)
 	if (!ft_strcmp(s->builtin[0], s->tab_prompt[0]))
 		ft_echo(s);
 	else if (!ft_strcmp(s->builtin[1], s->tab_prompt[0]))
-		ft_cd(s, env);
+		ft_cd(s, env, 0);
 	else if (!ft_strcmp(s->builtin[2], s->tab_prompt[0]))
 		ft_setenv(s->tab_prompt, env);
 	else if (!ft_strcmp(s->builtin[3], s->tab_prompt[0]))

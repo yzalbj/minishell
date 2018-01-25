@@ -74,7 +74,7 @@ char			ft_isoptp(char **tab_prompt, int *i);
 **	builtin_cd.c
 */
 
-void			ft_cd(t_shell *s, char ***env);
+void			ft_cd(t_shell *s, char ***env, int i);
 
 /*
 **	builtin_setenv.c
@@ -97,7 +97,7 @@ char			**ft_create_env(char **env);
 void			ft_increase_shlvl(char ***env);
 char			**ft_createtab_for_setenv(char *name, char *value, char f);
 char			*ft_getenv(char *var, char **env);
-void			ft_update_pwd(char *new_pwd, char ***env);
+void			ft_update_pwd(char *new_pwd, char ***env, char opt_p);
 
 /*
 **	exec.c

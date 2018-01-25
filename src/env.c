@@ -12,12 +12,17 @@
 
 #include "../includes/minishell.h"
 
-void	ft_update_pwd(char *new_pwd, char ***env)
+void	ft_update_pwd(char *new_pwd, char ***env, char opt_p)
 {
 	char	**new_var;
 
-	new_var = ft_createtab_for_setenv("OLDPWD",
-		ft_getenv("PWD", *env), 'R');
+	if (opt_p)
+		ft_strdel(&new_pwd);
+	if (opt_p)
+		new_pwd = getcwd(NULL, 0);
+	new_var = ft_createtab_for_setenv("OLDPWD", ft_getenv("PWD", *env), 'R');
+	if (!new_var)
+		new_var = ft_createtab_for_setenv("OLDPWD", "/", 'N');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
 	new_var = ft_createtab_for_setenv("PWD", new_pwd, 'N');
@@ -69,7 +74,7 @@ char	**ft_createtab_for_setenv(char *name, char *value, char f)
 {
 	char	**tab;
 
-	if (!(tab = (char **)malloc(sizeof(char *) * 3)))
+	if (!name || !value || !(tab = (char **)malloc(sizeof(char *) * 3)))
 		return (NULL);
 	tab[0] = ft_strdup("setenv");
 	tab[1] = ft_strjoin(name, "=", 'N');
