@@ -6,7 +6,7 @@
 /*   By: jblazy <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/09 16:48:52 by jblazy            #+#    #+#             */
-/*   Updated: 2018/01/23 17:47:06 by jblazy           ###   ########.fr       */
+/*   Updated: 2018/01/25 19:53:38 by jblazy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,11 @@ typedef struct	s_shell
 	char		**tab_prompt;
 }				t_shell;
 
-void	ft_checkpwd(char ***env);
+/*
+**	main.c
+*/
+
+void			ft_checkpwd(char ***env);
 
 /*
 **	signal.c
