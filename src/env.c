@@ -20,7 +20,8 @@ void	ft_update_pwd(char **new_pwd, char ***env, char opt_p)
 		ft_strdel(&(*new_pwd));
 	if (opt_p)
 		*new_pwd = getcwd(NULL, 0);
-	new_var = ft_createtab_for_setenv("OLDPWD", ft_getenv("PWD", *env), 'R');
+	new_var = ft_createtab_for_setenv("OLDPWD",
+		(ft_singleton_sh(NULL))->pwd, 'N');
 	if (!new_var)
 		new_var = ft_createtab_for_setenv("OLDPWD", "/", 'N');
 	ft_setenv(new_var, env);
@@ -28,6 +29,8 @@ void	ft_update_pwd(char **new_pwd, char ***env, char opt_p)
 	new_var = ft_createtab_for_setenv("PWD", *new_pwd, 'N');
 	ft_setenv(new_var, env);
 	ft_freetab(&new_var);
+	ft_strdel(&(ft_singleton_sh(NULL))->pwd);
+	ft_singleton_sh(NULL)->pwd = ft_strdup(*new_pwd);
 }
 
 char	*ft_getenv(char *var, char **env)

@@ -42,13 +42,13 @@ char	ft_isoptp(char **tab_prompt, int *i)
 **	WHEN TO ADD IS NULL, WE ADD THE PWD TO PATH
 */
 
-char	*ft_concatpath(char *path, char **env, char *to_add, char free_path)
+char	*ft_concatpath(char *path, char *to_add, char free_path)
 {
 	char	*tmp;
 	int		i;
 
 	if (!to_add)
-		tmp = ft_getenv("PWD", env);
+		tmp = ft_strdup((ft_singleton_sh(NULL)->pwd));
 	else
 		tmp = ft_strdup(to_add);
 	i = 0;

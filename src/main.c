@@ -14,11 +14,14 @@
 
 void	ft_checkpwd(char ***env)
 {
-	char	*tmp;
-	char	**reset_pwd;
+	char		*tmp;
+	char		**reset_pwd;
+	struct stat	stat_tmp;
 
-	ft_singleton_env(*env);
-	if (!(tmp = ft_getenv("PWD", *env)) || !tmp[0])
+	if (!(tmp = ft_getenv("PWD", *env)) || !tmp[0] || access(tmp, F_OK) ||
+		(!lstat(tmp, &stat_tmp) && ((stat_tmp.st_mode & S_IFDIR) != S_IFDIR &&
+			(stat_tmp.st_mode & S_IFLNK) != S_IFLNK)) || !ft_strcmp(tmp, ".") ||
+			!ft_strcmp(tmp, ".."))
 	{
 		reset_pwd = ft_createtab_for_setenv("PWD", getcwd(NULL, 0), 'R');
 		ft_setenv(reset_pwd, env);
@@ -50,6 +53,8 @@ int		main(int argc, char **argv, char **env)
 
 	s.env = ft_create_env(env);
 	s.builtin = create_builtin_tab();
+	s.pwd = ft_getenv("PWD", env);
+	ft_singleton_sh(&s);
 	while (argc && argv)
 	{
 		ft_checkpwd(&s.env);

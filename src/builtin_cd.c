@@ -47,7 +47,7 @@ char	*ft_check_cdpath(char *path, char ***env)
 	i = 0;
 	while (cdpath && cdpath[i])
 	{
-		path_tmp = ft_concatpath(path, *env, cdpath[i], 0);
+		path_tmp = ft_concatpath(path, cdpath[i], 0);
 		if (!lstat(path_tmp, &stat_tmp))
 		{
 			if ((stat_tmp.st_mode & S_IFDIR) == S_IFDIR)
@@ -69,7 +69,7 @@ char	*ft_checkpath(char *path, char ***env, char opt_p)
 	path_tmp = NULL;
 	path_tmp = ft_check_cdpath(path, env);
 	if (!path_tmp)
-		path_tmp = ft_concatpath(path, *env, NULL, 0);
+		path_tmp = ft_concatpath(path, NULL, 0);
 	if (!opt_p && path_tmp)
 		ft_shortpath(&path_tmp, 0, 0);
 	if (!lstat(path_tmp, &stat_tmp))
@@ -96,7 +96,7 @@ void	ft_cd2(char *path, char opt_p, char ***env)
 	{
 		if (*env && (!ft_strncmp(path, "./", 2) ||
 				!ft_strncmp(path, "../", 3)))
-			path = ft_concatpath(path, *env, NULL, 1);
+			path = ft_concatpath(path, NULL, 1);
 		if (*env && !opt_p && path)
 			ft_shortpath(&path, 0, 0);
 	}

@@ -12,14 +12,14 @@
 
 #include "../includes/minishell.h"
 
-char	**ft_singleton_env(char **env)
+t_shell	*ft_singleton_sh(t_shell *s)
 {
-	static char	**mem_env;
+	static t_shell	*mem_sh;
 
-	if (env)
-		mem_env = env;
+	if (s)
+		mem_sh = s;
 	else
-		return (mem_env);
+		return (mem_sh);
 	return (NULL);
 }
 
@@ -27,5 +27,5 @@ void	ft_control_c(int sig)
 {
 	ft_putchar('\n');
 	if (sig)
-		ft_display_prompt(ft_singleton_env(NULL));
+		ft_display_prompt();
 }

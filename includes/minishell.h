@@ -33,6 +33,7 @@ typedef struct	s_shell
 	char		**env;
 	char		*prompt;
 	char		**tab_prompt;
+	char		*pwd;
 }				t_shell;
 
 /*
@@ -46,7 +47,7 @@ void			ft_checkpwd(char ***env);
 */
 
 void			ft_control_c(int sig);
-char			**ft_singleton_env(char **env);
+t_shell			*ft_singleton_sh(t_shell *s);
 
 /*
 **	builtin_echo.c
@@ -58,7 +59,7 @@ int				ft_echo(t_shell *s);
 **	prompt.c
 */
 
-void			ft_display_prompt(char **env);
+void			ft_display_prompt(void);
 void			ft_manage_prompt(t_shell *s);
 
 /*
@@ -72,8 +73,7 @@ char			**create_builtin_tab(void);
 **	builtin_cd_utils.c
 */
 
-char			*ft_concatpath(char *path, char **env,
-					char *to_add, char free_path);
+char			*ft_concatpath(char *path, char *to_add, char free_path);
 void			ft_shortpath(char **path, int i, int j);
 char			ft_isoptp(char **tab_prompt, int *i);
 

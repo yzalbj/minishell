@@ -12,11 +12,11 @@
 
 #include "../includes/minishell.h"
 
-void	ft_display_prompt(char **env)
+void	ft_display_prompt(void)
 {
 	char		*pwd;
 
-	pwd = ft_getenv("PWD", env);
+	pwd = ft_strdup((ft_singleton_sh(NULL))->pwd);
 	ft_putstr("\e[32m");
 	if (pwd)
 		ft_putstr(pwd);
@@ -99,7 +99,7 @@ void	ft_manage_prompt(t_shell *s)
 	size_t	i;
 
 	i = 0;
-	ft_display_prompt(s->env);
+	ft_display_prompt();
 	signal(SIGINT, &ft_control_c);
 	s->prompt = NULL;
 	if (!get_next_line(0, &(s->prompt)))
