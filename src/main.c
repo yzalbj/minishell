@@ -53,7 +53,7 @@ int		main(int argc, char **argv, char **env)
 
 	s.env = ft_create_env(env);
 	s.builtin = create_builtin_tab();
-	s.pwd = ft_getenv("PWD", env);
+	s.pwd = ft_getenv("PWD", s.env);
 	ft_singleton_sh(&s);
 	while (argc && argv)
 	{
